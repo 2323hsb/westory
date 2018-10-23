@@ -1,0 +1,15 @@
+{% extends "posts/base.html" %}
+{% load static %} 
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'posts/css/auth.css' %}">
+{% endblock stylesheets %}
+{% block content %}
+<div class='authbox'>
+    <div class='authbox__hello'>Westory에 오신 것을 환영합니다</div>
+    <div class='authbox__buttons'><button class='authbox__buttons__google btn btn-primary'>Google로 계속하기</button></div>
+</div>
+{% endblock content %}
+{% block javascripts %}
+<script src="https://apis.google.com/js/platform.js?onload=onGoogleJSLoaded" async defer></script>
+<script src="{% static 'posts/js/auth.js' %}"></script>
+{% endblock javascripts %}

@@ -31,10 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    # 'rest_framework',
     'posts.apps.PostsConfig',
-    # 'authentication.apps.AuthenticationConfig',
-    # 'profiles.apps.ProfilesConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -125,5 +122,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    '/webpage/static/'
+    '/posts/static/'
 ]
