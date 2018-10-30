@@ -1,23 +1,154 @@
-$(document).ready(function () {
-    getUserInfo()
-    $('.posts__form-box__form').on('submit', function (e) {
-        e.preventDefault();
-        var contentText = $('.posts__form-box__textarea').val();
-        var payload = {
-            content: contentText,
-        }
+let ACCESS_TOKEN
+let USER_USERNAME
+let USER_PROFILE_IMAGE_URL
+let USER_POSTS
+
+const requestInitInformation = async () => {
+    try {
+        setUserInfo(await getUserInfo())
+        setPosts(await getPost())
+    } catch (error) {
+        console.log(error)
+    }
+    displayUserInfo()
+    displayPost()
+}
+
+const reloadPost = async () => {
+    try {
+        setPosts(await getPost())
+    } catch (error) {
+        console.log(error)
+    }
+    displayPost()
+}
+
+function getUserInfo() {
+    return new Promise((resolve, reject) => {
         $.ajax({
-            url: 'http://127.0.0.1:8001/apis/createPost',
-            type: "POST",
-            data: payload,
-        }).done(function (response) {
-            $('.posts__form-box__textarea > .emojionearea-editor').empty()
-            getPosts()
-        }).fail(function (error) {
+            headers: {
+                accept: "application/json",
+                Authorization: "Token " + ACCESS_TOKEN,
+            },
+            url: "http://127.0.0.1:8001/user",
+            type: "GET",
+        }).done((response) => { resolve(response) }).fail((error) => { reject(error) });
+    })
 
-        }).always(function () {
+}
 
-        });
+function setUserInfo(response) {
+    USER_USERNAME = response[0].username
+    USER_PROFILE_IMAGE_URL = response[0].profile_img
+}
+
+function displayUserInfo() {
+    $('.header__profile__pic').attr('src', USER_PROFILE_IMAGE_URL)
+}
+
+function getPost() {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            headers: {
+                accept: "application/json",
+                Authorization: "Token " + ACCESS_TOKEN,
+            },
+            url: 'http://127.0.0.1:8001/post',
+            type: "GET",
+        }).done((response) => { resolve(response) }).fail((error) => { reject(error) })
+    })
+}
+
+function setPosts(response) {
+    USER_POSTS = response
+}
+
+function displayPost() {
+    jQuery.each(USER_POSTS, function (i, post) {
+        var postHtml = "";
+        created_date = formatDate(post.created_date)
+        postHtml += "<div class='posts__streams__item' data-id='" + post.id + "'>";
+        postHtml += "<div class='posts__streams__item__title'>"
+        postHtml += "<div class='image-cropper'><img class='posts__streams__item__title__img' src='" + post.user_profile_img + "'></div>"
+        postHtml += "<div class='posts_streams_item__title__text'>"
+        postHtml += "<div class='posts__streams__item__title__name'>" + post.user_username + "</div>"
+        postHtml += "<div class='posts__streams__item__title__time'>" + created_date + "</div>"
+        postHtml += "</div>"
+        postHtml += "</div>"
+        postHtml += "<div class='posts__streams__item__content'>" + post.content + "</div>"
+        postHtml += "<div class='posts__streams__item__tools'>"
+        postHtml += "<span><i class='far fa-thumbs-up'></i> 좋아요</span>"
+        postHtml += "<span class='posts__streams__item__tools__morecomment'><i class='far fa-comment'></i> 댓글 더보기</span>"
+        postHtml += "</div>"
+        postHtml += "<div class='posts__streams__item__replys'></div>"
+        postHtml += "<div class='posts__streams__item__reply__form'>"
+        postHtml += "<div class='image-cropper'><img class='posts__streams__item__reply__form__img' src='" + USER_PROFILE_IMAGE_URL + "'></div>"
+        postHtml += "<input class='posts__streams__item__reply__form__input' placeholder='댓글을 입력하세요'>"
+        postHtml += "<button class='posts__streams__item__reply__form__btn btn'>달기</button>"
+        postHtml += "</div>"
+        postHtml += "</div>"
+        $('.posts__streams').append(postHtml)
+    });
+
+    $('.posts__streams__item__tools__morecomment').click(function () {
+        var post_id = $(this).parents('.posts__streams__item').data('id')
+        var replys_div = $(this).parent().siblings('.posts__streams__item__replys')
+        moreReply(post_id, replys_div)
+    })
+}
+
+const moreReply = async (post_id, replys_div) => {
+    try {
+        displayReply(replys_div, await getReply(post_id))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+function getReply(post_id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            headers: {
+                accept: "application/json",
+                Authorization: "Token " + ACCESS_TOKEN,
+            },
+            url: 'http://127.0.0.1:8001/reply',
+            type: "GET",
+            data: {
+                post_id: post_id,
+            },
+        }).done((response) => { resolve(response) }).fail((error) => { reject(error) })
+    })
+}
+
+function displayReply(replys_div, response) {
+    // replys_div.append("test")
+    // console.log(response)
+    jQuery.each(response, function (i, reply) {
+        var reply_html = ""
+        reply_html += "<div class='posts__streams__item__replys__item'><a>" + reply.user_username + "</a></div>"
+        replys_div.append(reply_html)
+    })
+}
+
+$(document).ready(function () {
+    ACCESS_TOKEN = getCookie('access_token')
+    if (!ACCESS_TOKEN) {
+        onAuthFail()
+    }
+    requestInitInformation()
+
+    $('.posts__form-box__form').on('submit', async function (event) {
+        event.preventDefault();
+        var content = $('.posts__form-box__textarea').val();
+        try {
+            await createPost(content)
+            $('.emojionearea-editor').empty();
+            $('.posts__streams').empty();
+            await reloadPost()
+        } catch (error) {
+            console.log(error)
+        }
     })
 
     $(".posts__form-box__textarea").emojioneArea({
@@ -28,84 +159,67 @@ $(document).ready(function () {
     })
 });
 
-function getUserInfo() {
-    var access_token = getCookie('access_token')
-    console.log(access_token)
-    var payload = {
-        access_token: access_token,
-    }
-    $.ajax({
-        headers: {
-            accept: "application/json",
-        },
-        url: 'http://127.0.0.1:8001/user',
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(payload),
-        dataType: "json"
-    }).done(function (response) {
-        console.log(response)
-    }).fail(function (error) {
-        console.log(error)
-    })
-}
-
 function onAuthFail() {
     window.location.replace('http://localhost:8000/')
 }
 
-function loadUserPosts(googleUser) {
-    $this = $('.posts__streams');
-    $this.empty();
-
-    var id_token = googleUser.getAuthResponse().id_token;
-    var payload = {
-        id_token: id_token,
-    }
-
-    $.ajax({
-        headers: {
-            accept: "application/json",
-        },
-        url: 'http://127.0.0.1:8001/posts',
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(payload),
-        dataType: "json"
-    }).done(function (response) {
-
-    }).fail(function (error) {
-        console.log(error)
+function createPost(content) {
+    return new Promise((resolve, reject) => {
+        var payload = {
+            content: content
+        }
+        $.ajax({
+            headers: {
+                accept: "application/json",
+                Authorization: "Token " + ACCESS_TOKEN,
+            },
+            url: 'http://127.0.0.1:8001/post',
+            type: "POST",
+            data: payload,
+        }).done(function (response) {
+            resolve(response)
+        }).fail(function (error) {
+            reject(error)
+        })
     })
-    // $.ajax({
-    //     url: 'http://127.0.0.1:8001/apis/createPost',
-    //     type: "GET",
-    //     accept: "application/json"
-    // }).done(function (response) {
-    //     for (i = 0; i < response.length; i++) {
-    //         $this.append(generatePost(response[i].content, response[i].created_date))
-    //     }
-    // }).fail(function (response) {
-    //     console.log("fail")
-    // })
 }
+
+// function getPost(access_token) {
+//     $.ajax({
+//         headers: {
+//             accept: "application/json",
+//         },
+//         url: 'http://127.0.0.1:8001/post',
+//         type: "GET",
+//         data: {
+//             access_token: access_token
+//         },
+//     }).done(function (response) {
+//         console.log(response)
+//         generatePost(response)
+//     }).fail(function (error) {
+//         console.log(error)
+//     })
+// }
+
+// function getPublicUserInfo(userKey) {
+//     $.ajax({
+//         headers: {
+//             accept: "application/json",
+//         },
+//         url: 'http://127.0.0.1:8001/public-user',
+//         type: "GET",
+//         data: {
+//             key: userKey
+//         },
+//     }).done(function (response) {
+//         console.log(response)
+//     })
+// }
 
 function signOut() {
-    gauthInstance.signOut().then(function () {
-        window.location.replace('http://localhost:8000/')
-    })
-}
-
-function generatePost(content, created_date) {
-    var postHtml = "";
-    created_date = formatDate(created_date)
-    postHtml += "<div class='posts__streams__item'>";
-    postHtml += "<div class='posts__streams__item__title'>" + created_date + "</div>"
-    postHtml += "<div class='posts__streams__item__content'>" + content + "</div>"
-    postHtml += "<div class='posts__streams__item__tools'></div>"
-    postHtml += "<div class='posts__streams__item__reply'></div>"
-    postHtml += "</div>"
-    return postHtml;
+    deleteCookie('access_token')
+    window.location.replace('http://localhost:8000/')
 }
 
 function formatDate(date) {
@@ -119,7 +233,21 @@ function formatDate(date) {
     if (month.length < 2) month = '0' + month;
     if (day.length < 2) day = '0' + day;
 
-    return [year, month, day].join('-') + " " + [hour, min].join(':');
+    var create_time = new Date(date).getTime()
+    var now = new Date()
+    var sec_gap = (now - create_time) / 1000
+    if (sec_gap < 60) {
+        return Math.floor(sec_gap) + '초 전'
+    }
+    var min_gap = sec_gap / 60
+    if (min_gap < 60) {
+        return Math.floor(min_gap) + '분 전'
+    }
+    var hour_gap = min_gap / 60
+    if (hour_gap < 24) {
+        return Math.floor(hour_gap) + '시간 전'
+    }
+    return year + '년 ' + month + '월 ' + day + '일'
 }
 
 // function uploadImage(image) {
@@ -168,4 +296,8 @@ function getCookie(name) {
         if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
     }
     return null;
+}
+
+function deleteCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
