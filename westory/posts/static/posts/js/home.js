@@ -7,11 +7,13 @@ const requestInitInformation = async () => {
     try {
         setUserInfo(await getUserInfo())
         setPosts(await getPost())
-    } catch (error) {
-        console.log(error)
+    } catch (errorThrown) {
+        console.log(errorThrown)
+        return errorThrown
     }
     displayUserInfo()
     displayPost()
+    // return 
 }
 
 const reloadPost = async () => {
@@ -28,11 +30,15 @@ function getUserInfo() {
         $.ajax({
             headers: {
                 accept: "application/json",
-                Authorization: "Token " + ACCESS_TOKEN,
+                Authorization: "Token " + ACCESS_TOKEN +'a',
             },
             url: "http://127.0.0.1:8001/user",
             type: "GET",
-        }).done((response) => { resolve(response) }).fail((error) => { reject(error) });
+        }).done((response) => {
+            resolve(response) 
+        }).fail((_, _, errorThrown) => {
+            reject(errorThrown) 
+        });
     })
 
 }
@@ -65,36 +71,57 @@ function setPosts(response) {
 
 function displayPost() {
     jQuery.each(USER_POSTS, function (i, post) {
-        var postHtml = "";
+        var post_html = "";
         created_date = formatDate(post.created_date)
-        postHtml += "<div class='posts__streams__item' data-id='" + post.id + "'>";
-        postHtml += "<div class='posts__streams__item__title'>"
-        postHtml += "<div class='image-cropper'><img class='posts__streams__item__title__img' src='" + post.user_profile_img + "'></div>"
-        postHtml += "<div class='posts_streams_item__title__text'>"
-        postHtml += "<div class='posts__streams__item__title__name'>" + post.user_username + "</div>"
-        postHtml += "<div class='posts__streams__item__title__time'>" + created_date + "</div>"
-        postHtml += "</div>"
-        postHtml += "</div>"
-        postHtml += "<div class='posts__streams__item__content'>" + post.content + "</div>"
-        postHtml += "<div class='posts__streams__item__tools'>"
-        postHtml += "<span><i class='far fa-thumbs-up'></i> 좋아요</span>"
-        postHtml += "<span class='posts__streams__item__tools__morecomment'><i class='far fa-comment'></i> 댓글 더보기</span>"
-        postHtml += "</div>"
-        postHtml += "<div class='posts__streams__item__replys'></div>"
-        postHtml += "<div class='posts__streams__item__reply__form'>"
-        postHtml += "<div class='image-cropper'><img class='posts__streams__item__reply__form__img' src='" + USER_PROFILE_IMAGE_URL + "'></div>"
-        postHtml += "<input class='posts__streams__item__reply__form__input' placeholder='댓글을 입력하세요'>"
-        postHtml += "<button class='posts__streams__item__reply__form__btn btn'>달기</button>"
-        postHtml += "</div>"
-        postHtml += "</div>"
-        $('.posts__streams').append(postHtml)
+        post_html += "<div class='posts__streams__item' data-id='" + post.id + "'>";
+        post_html += "   <div class='posts__streams__item__title'>"
+        post_html += "       <div class='image-cropper'><img class='posts__streams__item__title__img' src='" + post.user_profile_img + "'></div>"
+        post_html += "       <div class='posts_streams_item__title__text'>"
+        post_html += "           <div class='posts__streams__item__title__name'>" + post.user_username + "</div>"
+        post_html += "           <div class='posts__streams__item__title__time'>" + created_date + "</div>"
+        post_html += "       </div>"
+        post_html += "   </div>"
+        post_html += "   <div class='posts__streams__item__content'>" + post.content + "</div>"
+        post_html += "   <div class='posts__streams__item__tools'>"
+        post_html += "       <span><i class='far fa-thumbs-up'></i> 좋아요</span>"
+        post_html += "       <span class='posts__streams__item__tools__morecomment'><i class='far fa-comment'></i> 댓글 더보기</span>"
+        post_html += "   </div>"
+        post_html += "   <div class='posts__streams__item__replys'></div>"
+        post_html += "   <div class='posts__streams__item__reply__form'>"
+        post_html += "       <div class='image-cropper'><img class='posts__streams__item__reply__form__img' src='" + USER_PROFILE_IMAGE_URL + "'></div>"
+        post_html += "       <form method='POST'>"
+        post_html += "          <input name='reply__input' class='posts__streams__item__reply__form__input' placeholder='댓글을 입력하세요'>"
+        post_html += "          <button class='posts__streams__item__reply__form__btn btn'>달기</button>"
+        post_html += "       </form>"
+        post_html += "   </div>"
+        post_html += "</div>"
+        $('.posts__streams').append(post_html)
     });
 
-    $('.posts__streams__item__tools__morecomment').click(function () {
-        var post_id = $(this).parents('.posts__streams__item').data('id')
-        var replys_div = $(this).parent().siblings('.posts__streams__item__replys')
-        moreReply(post_id, replys_div)
+    $('.posts__streams__item__tools__morecomment').click(more_reply_event)
+}
+
+function more_reply_event() {
+    var post_id = $(this).parents('.posts__streams__item').data('id')
+    var replys_div = $(this).parent().siblings('.posts__streams__item__replys')
+    moreReply(post_id, replys_div).then(() => {
+        $(this).empty()
+        var temp_html = ""
+        temp_html += "<i class='fas fa-angle-up'></i> 댓글 감추기"
+        $(this).append(temp_html)
+        $(this).off()
+        $(this).click(remove_reply_event)
     })
+}
+function remove_reply_event() {
+    $(this).empty()
+    var temp_html = ""
+    temp_html += "<i class='far fa-comment'></i> 댓글 더보기"
+    $(this).append(temp_html)
+    var replys_div = $(this).parent().siblings('.posts__streams__item__replys')
+    replys_div.empty()
+    $(this).off()
+    $(this).click(more_reply_event)
 }
 
 const moreReply = async (post_id, replys_div) => {
@@ -122,11 +149,18 @@ function getReply(post_id) {
 }
 
 function displayReply(replys_div, response) {
-    // replys_div.append("test")
-    // console.log(response)
     jQuery.each(response, function (i, reply) {
+        created_date = formatDate(reply.created_date)
         var reply_html = ""
-        reply_html += "<div class='posts__streams__item__replys__item'><a>" + reply.user_username + "</a></div>"
+        reply_html += "<div class='posts__streams__item__replys__item'>"
+        reply_html += "<div class='posts__streams__item__replys__item__title'>"
+        reply_html += "<div class='image-cropper-reply'><img class='posts__streams__item__title__img' src='" + reply.user_profile_img + "'></div>"
+        reply_html += "<div class='posts__streams__item__replys__item__title__username'>" + reply.user_username + "</div>"
+        reply_html += "<div class='posts__streams__item__replys__item__title__time'>" + created_date + "</div>"
+        reply_html += "</div>"
+        reply_html += "<div class='posts__streams__item__replys__item__content'>" + reply.content
+        reply_html += "</div>"
+        reply_html += "</div>"
         replys_div.append(reply_html)
     })
 }
@@ -136,7 +170,32 @@ $(document).ready(function () {
     if (!ACCESS_TOKEN) {
         onAuthFail()
     }
-    requestInitInformation()
+    requestInitInformation().then(() => {
+        // add reply event
+        $('.posts__streams__item__reply__form form').on('submit', function (event) {
+            event.preventDefault()
+            var post_id = $(this).parents('.posts__streams__item').data('id')
+            var content = $(this).find('[name=reply__input]').val();
+            $.ajax({
+                headers: {
+                    accept: "application/json",
+                    Authorization: "Token " + ACCESS_TOKEN,
+                },
+                url: 'http://127.0.0.1:8001/reply',
+                type: "POST",
+                data: {
+                    post_id: post_id,
+                    content: content,
+                },
+            }).done(() => {
+                // show new reply
+            }).fail(() => {
+
+            })
+        })
+    }).catch((error) => {
+        console.log(error)
+    })
 
     $('.posts__form-box__form').on('submit', async function (event) {
         event.preventDefault();
