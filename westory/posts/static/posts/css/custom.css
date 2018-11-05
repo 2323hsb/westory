@@ -114,6 +114,14 @@
   margin-top: 8px;
 }
 
+.posts__streams__end {
+  display: flex;
+  flex: 1 0 auto;
+  justify-content: center;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
 .posts__streams__item {
   display: flex;
   height: 100%;

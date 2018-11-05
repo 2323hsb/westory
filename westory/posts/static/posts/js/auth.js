@@ -1,7 +1,9 @@
+let WESTORY_API_BASE_URL = 'http://localhost:8001'
+
 function onGoogleJSLoaded() {
     var access_token = getCookie('access_token')
     if (access_token) {
-        window.location.replace('http://localhost:8000/home')
+        window.location.replace('/home')
     } else {
         set_google_auth_btn_listener()
     }
@@ -26,7 +28,7 @@ function set_google_auth_btn_listener() {
                             headers: {
                                 accept: "application/json",
                             },
-                            url: 'http://127.0.0.1:8001/auth/signIn',
+                            url: WESTORY_API_BASE_URL + '/auth/signIn',
                             type: "POST",
                             contentType: "application/json",
                             data: JSON.stringify(payload),
@@ -35,7 +37,7 @@ function set_google_auth_btn_listener() {
                             switch (response.status) {
                                 case 'success':
                                     document.cookie = "access_token=" + response.access_token
-                                    window.location.replace('http://localhost:8000/home')
+                                    window.location.replace('/home')
                                     break
                                 case 'new':
                                     signUpWithGoogle(id_token)
@@ -63,7 +65,7 @@ function signUpWithGoogle(id_token) {
         headers: {
             accept: "application/json",
         },
-        url: 'http://127.0.0.1:8001/auth/signUpWithGoogle',
+        url: WESTORY_API_BASE_URL + '/auth/signUpWithGoogle',
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(payload),
