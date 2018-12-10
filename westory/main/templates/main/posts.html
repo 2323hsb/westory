@@ -1,12 +1,12 @@
-{% extends "posts/base.html" %}
+{% extends "commons/base.html" %}
 {% load static %}
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="{% static 'posts/css/custom.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'posts/css/posts.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'posts/css/summernote-lite.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'posts/css/emoji/emojionearea.min.css' %}">
 {% endblock stylesheets %}
 {% block header %}
-{% include 'posts/header.html' %}
+{% include 'commons/header.html' %}
 {% endblock header %}
 {% block content %}
 <div class="posts">
@@ -14,8 +14,12 @@
         <form class="posts__form-box__form" method="POST">
             <textarea class="posts__form-box__textarea" placeholder="Share your story."></textarea>
             <div class="posts__form-box__tools">
-                <div class="posts__form-box__tools__item"><i class="fas fa-camera" data-type=picker></i></div>
-                <button class="posts__form-box__tools__btn btn">게시</button>
+                <div class="posts__form-box__tools__image">
+                    <input id="img_upload_input" type="file" accept="image/*">
+                    <i class="fas fa-camera" data-type=picker></i>
+                </div>
+                <div class="posts__form-box__tools__preview"></div>
+                <button class="posts__form-box__tools__submit btn">게시</button>
             </div>
         </form>
     </div>
@@ -24,7 +28,7 @@
 </div>
 {% endblock content %}
 {% block javascripts %}
-<script src="{% static 'posts/js/home.js' %}"></script>
+<script src="{% static 'posts/js/posts.js' %}"></script>
 <script src="{% static 'posts/js/summernote-lite.js' %}"></script>
 <script src="{% static 'posts/js/lang/summernote-ko-KR.js' %}"></script>
 <script src="{% static 'posts/js/emoji/emojionearea.min.js' %}"></script>

@@ -31,7 +31,8 @@ ALLOWED_HOSTS = ['localhost', '192.168.0.10',]
 # Application definition
 
 INSTALLED_APPS = [
-    'posts.apps.PostsConfig',
+    'main.apps.MainConfig',
+    'cauth.apps.CauthConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -122,5 +123,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    '/posts/static/'
+    # '/posts/static/'
 ]

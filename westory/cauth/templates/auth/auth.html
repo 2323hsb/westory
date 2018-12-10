@@ -1,7 +1,7 @@
-{% extends "posts/base.html" %}
+{% extends "commons/base.html" %}
 {% load static %} 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="{% static 'posts/css/auth.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'auth/css/auth.css' %}">
 {% endblock stylesheets %}
 {% block content %}
 <div class='authbox'>
@@ -11,5 +11,5 @@
 {% endblock content %}
 {% block javascripts %}
 <script src="https://apis.google.com/js/platform.js?onload=onGoogleJSLoaded" async defer></script>
-<script src="{% static 'posts/js/auth.js' %}"></script>
+<script src="{% static 'auth/js/auth.js' %}"></script>
 {% endblock javascripts %}

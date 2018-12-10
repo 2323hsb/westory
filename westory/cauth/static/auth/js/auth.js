@@ -3,7 +3,7 @@ let WESTORY_API_BASE_URL = 'http://localhost:8001'
 function onGoogleJSLoaded() {
     var access_token = getCookie('access_token')
     if (access_token) {
-        window.location.replace('/home')
+        window.location.replace('/main/posts')
     } else {
         set_google_auth_btn_listener()
     }
@@ -37,7 +37,7 @@ function set_google_auth_btn_listener() {
                             switch (response.status) {
                                 case 'success':
                                     document.cookie = "access_token=" + response.access_token
-                                    window.location.replace('/home')
+                                    window.location.replace('/main/posts')
                                     break
                                 case 'new':
                                     signUpWithGoogle(id_token)

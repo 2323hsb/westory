@@ -1,0 +1,14 @@
+{% extends "commons/base.html" %}
+{% load static %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'conditions/css/conditions.css' %}">
+{% endblock stylesheets %}
+{% block header %}
+{% include 'commons/header.html' %}
+{% endblock header %}
+{% block content %}
+
+{% endblock content %}
+{% block javascripts %}
+<script src="{% static 'conditions/js/conditions.js' %}"></script>
+{% endblock javascripts %}
