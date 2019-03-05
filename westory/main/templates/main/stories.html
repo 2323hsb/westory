@@ -1,0 +1,122 @@
+{% extends "commons/base.html" %}
+{% load static %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'stories/css/stories.css' %}">
+{% endblock stylesheets %}
+{% block header %}
+{% include 'commons/header.html' %}
+{% endblock header %}
+{% block content %}
+<div class="stories__layout">
+    <div class="stories__layout__leftside">
+        <div class="stories__headline">
+            <a><img class="stories__headline__img"
+                    src="https://cdn-images-1.medium.com/max/800/1*DPuSx11HAKf3TD1mZEac5Q.jpeg"></a>
+            <h1><a class="stories__headline__subject">패스트 푸드는 정말 해롭다!</a></h1>
+            <p><a class="stories__headline__undertext">30년 동안 칼로리와 같이 부분적인 크기가 커졌고, 음식은 덜 건강해졌다.</a></p>
+            <div class="stories__headline__about">
+                <a><img src="https://cdn-images-1.medium.com/max/800/1*DPuSx11HAKf3TD1mZEac5Q.jpeg"></a>
+                <div class="stories__headline__about__info">
+                    <a><span class="stories__headline__about__info__name">Eric Ravenscraft</span></a>
+                    <span class="stories__headline__about__info__date">Mar 2 · 5 min read</span>
+                </div>
+            </div>
+        </div>
+        <div class="stories__latest">
+            <h2>최근 이야기</h2>
+            <div class="stories__latest__item">
+                <div class="stories__latest__item__summary">
+                    <a>
+                        <h3>This Professor Suffers From a Mystery Disease, So She Developed an App to Track Its Effects
+                        </h3>
+                    </a>
+                    <p>Endometriosis gets very little U.S. federal funding for research, so Professor Noemie Elhadad
+                        developed the Phendo app to help women…</p>
+                    <div class="stories__latest__item__summary__about">
+                        <a><span class="stories__latest__item__summary__about__name">Eric Ravenscraft</span></a>
+                        <span class="stories__latest__item__summary__about__date">Mar 2 · 5 min read</span>
+                    </div>
+                </div>
+                <a class="stories__latest__item__img"></a>
+            </div>
+            <div class="stories__latest__item">
+                <div class="stories__latest__item__summary">
+                    <a>
+                        <h3>4 Things to Consider About Your Biopsy Report
+                        </h3>
+                    </a>
+                    <p>So you’ve had a biopsy or other surgical procedure. Maybe your doctor has already reviewed the
+                        results with you. Hopefully it was good…</p>
+                    <div class="stories__latest__item__summary__about">
+                        <a><span class="stories__latest__item__summary__about__name">Eric Ravenscraft</span></a>
+                        <span class="stories__latest__item__summary__about__date">Mar 2 · 5 min read</span>
+                    </div>
+                </div>
+                <a class="stories__latest__item__img"></a>
+            </div>
+            <div class="stories__latest__item">
+                <div class="stories__latest__item__summary">
+                    <a>
+                        <h3>How I Discovered I Had Binge Eating Disorder, Not a Lack of Self-Control
+                        </h3>
+                    </a>
+                    <p>I may feel out-of-control during a binge, but self-control is not the issue</p>
+                    <div class="stories__latest__item__summary__about">
+                        <a><span class="stories__latest__item__summary__about__name">Eric Ravenscraft</span></a>
+                        <span class="stories__latest__item__summary__about__date">Mar 2 · 5 min read</span>
+                    </div>
+                </div>
+                <a class="stories__latest__item__img"></a>
+            </div>
+            <div class="stories__latest__item">
+                <div class="stories__latest__item__summary">
+                    <a>
+                        <h3>How I Discovered I Had Binge Eating Disorder, Not a Lack of Self-Control
+                        </h3>
+                    </a>
+                    <p>I may feel out-of-control during a binge, but self-control is not the issue</p>
+                    <div class="stories__latest__item__summary__about">
+                        <a><span class="stories__latest__item__summary__about__name">Eric Ravenscraft</span></a>
+                        <span class="stories__latest__item__summary__about__date">Mar 2 · 5 min read</span>
+                    </div>
+                </div>
+                <a class="stories__latest__item__img"></a>
+            </div>
+            <div class="stories__latest__item">
+                <div class="stories__latest__item__summary">
+                    <a>
+                        <h3>How I Discovered I Had Binge Eating Disorder, Not a Lack of Self-Control
+                        </h3>
+                    </a>
+                    <p>I may feel out-of-control during a binge, but self-control is not the issue</p>
+                    <div class="stories__latest__item__summary__about">
+                        <a><span class="stories__latest__item__summary__about__name">Eric Ravenscraft</span></a>
+                        <span class="stories__latest__item__summary__about__date">Mar 2 · 5 min read</span>
+                    </div>
+                </div>
+                <a class="stories__latest__item__img"></a>
+            </div>
+        </div>
+    </div>
+    <div class="stories__layout__rightside">
+        <div class="stories__introduction">
+            <h2>건강</h2>
+            <p>Body Talk & Stories</p>
+            <div class="stories__introduction__explain"><p>Follow to get great stories about Health in your inbox and on your homepage</p></div>
+        </div>
+        <div class="stories__category">
+            <h3>관련된 주제</h3>
+            <div class="stories__category__list">
+                <div class="stories__category__list__item stories__category__list__item--first"><a><span>식사와 건강</span></a></div>
+                <div class="stories__category__list__item"><a><span>정신 건강</span></a></div>
+                <div class="stories__category__list__item"><a><span>중독</span></a></div>
+                <div class="stories__category__list__item"><a><span>운동과 건강</span></a></div>
+            </div>
+        </div>
+        <div class="stories__popular"></div>
+    </div>
+</div>
+{% endblock content %}
+{% block javascripts %}
+<script src="{% static 'conditions/js/conditions.js' %}"></script>
+{% endblock javascripts %}

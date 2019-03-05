@@ -1,0 +1,15 @@
+{% extends "commons/base.html" %}
+{% load static %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'createstory/css/createstory.css' %}">
+{% endblock stylesheets %}
+{% block header %}
+{% include 'commons/header.html' %}
+{% endblock header %}
+{% block content %}
+
+{% endblock content %}
+{% block javascripts %}
+<script src="{% static 'createstory/js/createstory.js' %}"></script>
+<script src="{% static 'createstory/js/quill.js' %}"></script>
+{% endblock javascripts %}
