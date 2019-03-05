@@ -1,3 +1,7 @@
+body {
+  margin: 0px;
+}
+
 .header {
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
 }
@@ -16,7 +20,7 @@
 
 .header__contents {
     flex: 1 0 auto;
-    width: 600px;
+    width: 100%;
     padding: 0px 5px 0px 5px;
     margin-top: 20px;
   
@@ -53,41 +57,30 @@
   background-color: #e7f5ff;
 }
   
-.header__user {
+/* .header__user {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   flex: 1 0 auto;
   width: 200px;
   border-left: 1px solid #dee3eb;
-}
+} */
   
 .header__logo {
   display: flex;
   flex: 1 0 auto;
-  max-width: 100px;
+  max-width: 140px;
 }
 
-.header__logo img {
-  object-fit:scale-down;
-}
-
-.header__profile .btn {
+/* .header__profile .btn {
   width: 35px;
   height: 35px;
-}
-
-.header__profile__pic {
-  display: inline;
-  margin: 0 auto;
-  height: 100%;
-  width: auto;
-}
+} */
 
 .image-cropper {
   width: 35px;
   height: 35px;
-  position: relative;
+  /* position: relative; */
   overflow: hidden;
   border-radius: 50%;
 }
@@ -103,7 +96,7 @@
 }
 
 h1, h2, h3, h4, h5, h6, p {
-  margin: 0;
+  margin: 0 !important;
 }
 
 h1, h2, h3, p {

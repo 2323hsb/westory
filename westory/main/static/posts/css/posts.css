@@ -13,7 +13,7 @@
     flex: 0 1 auto;
     width: 600px;
     height: 100%;
-    padding: 3px;
+    margin-top: 30px;
 }
 
 .posts__form-box {
@@ -23,8 +23,8 @@
     min-height: 200px;
     background-color: white;
     padding: 4px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05);
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .posts__streams {
@@ -49,8 +49,8 @@
     margin-bottom: 10px;
     border-radius: 3px;
     padding: 15px 15px 0;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05);
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
     flex-direction: column;
     justify-content: flex-start;
 }
@@ -99,7 +99,7 @@
 }
 
 .posts__streams__item__tools span {
-    font-size: 14px; 
+    font-size: 14px;
     color: #5e5e5e;
     cursor: pointer;
 }
@@ -292,6 +292,7 @@
 }
 
 /* bootstrap custom */
-.btn.btn-default.dropdown-toggle:after{
+
+.btn.btn-default.dropdown-toggle:after {
     display: none;
 }
