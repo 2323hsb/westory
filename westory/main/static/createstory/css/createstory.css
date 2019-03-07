@@ -1,0 +1,112 @@
+.contents {
+    display: block;
+}
+
+.editor-section {
+    max-width: 1200px;
+    margin: auto;
+    margin-top: 30px;
+    margin-bottom: 150px;
+    position: relative;
+}
+
+.editor-section__title {
+    margin-bottom: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border: none;
+    font-size: 35px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.editor-section__title:focus {
+    outline-width: 0;
+}
+
+.editor-section__tools {
+    position: absolute;
+    left: -40px;
+}
+
+.editor-section__tools__btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 18px;
+    padding: 0;
+    height: 32px;
+    width: 32px;
+    text-align: center;
+    color: rgba(0, 0, 0, .54);
+}
+
+.editor-section__tools__btn:focus {
+    outline-width: 0;
+}
+
+#quill_editor {
+    width: 100%;
+    border: 1px gainsboro solid;
+    min-height: 500px;
+    font-size: 21px;
+    line-height: 1.58;
+    color: rgba(0, 0, 0, .84);
+    font-family: 'Noto Sans KR', sans-serif;
+    margin-bottom: 16px;
+}
+
+#quill_editor p {
+    font-size: 21px;
+    line-height: 1.58;
+    color: rgba(0, 0, 0, .84);
+}
+
+#quill_editor blockquote {
+    font-size: 21px;
+    line-height: 1.58;
+    color: rgba(0, 0, 0, .84);
+    border-left: 4px solid rgba(0, 0, 0, .84);
+}
+
+#quill_editor img {
+    width: 70%;
+    margin: auto;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.editor-section__control {
+    text-align: right;
+}
+
+.editor-section__control button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 18px;
+    text-align: center;
+    color: rgba(0, 0, 0, .84);
+    padding: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border: 1px gainsboro solid;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.editor-section__control button:focus {
+    outline-width: 0;
+}
+
+.ql-image {
+    display: none;
+}
+
+.settings_section {
+    max-width: 800px;
+    margin: auto;
+    margin-top: 30px;
+}

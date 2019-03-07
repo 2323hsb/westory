@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        <div class="stories__latest">
+        <div class="stories__latest" id="stories__latest">
             <h2>최근 이야기</h2>
             <div class="stories__latest__item">
                 <div class="stories__latest__item__summary">
@@ -105,7 +105,7 @@
             <div class="stories__introduction__explain"><p>Follow to get great stories about Health in your inbox and on your homepage</p></div>
         </div>
         <div class="stories__category">
-            <h3>관련된 주제</h3>
+            <h3>주제별</h3>
             <div class="stories__category__list">
                 <div class="stories__category__list__item stories__category__list__item--first"><a><span>식사와 건강</span></a></div>
                 <div class="stories__category__list__item"><a><span>정신 건강</span></a></div>
@@ -118,5 +118,5 @@
 </div>
 {% endblock content %}
 {% block javascripts %}
-<script src="{% static 'conditions/js/conditions.js' %}"></script>
+<script src="{% static 'stories/js/stories.js' %}"></script>
 {% endblock javascripts %}

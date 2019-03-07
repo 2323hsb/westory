@@ -2,14 +2,30 @@
 {% load static %}
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="{% static 'createstory/css/createstory.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'createstory/css/quill.css' %}"> -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 {% endblock stylesheets %}
 {% block header %}
 {% include 'commons/header.html' %}
 {% endblock header %}
 {% block content %}
+<div class='editor-section' id='editor-section'>
+    <input class="editor-section__title" id="editor-section__title" type="text" placeholder="제목">
+    <div class="editor-section__tools">
+        <button class="editor-section__tools__btn" id="editor-section__tools__btn__camera"><i class="fa fa-camera"></i></button>
+    </div>
+    <div id='quill_editor'></div>
+    <div class="editor-section__control">
+        <button id="editor-section__control__completebtn">작성완료</button>
+    </div>
+</div>
+<div class="settings-section" id='settings-section'>
 
+</div>
 {% endblock content %}
 {% block javascripts %}
-<script src="{% static 'createstory/js/createstory.js' %}"></script>
 <script src="{% static 'createstory/js/quill.js' %}"></script>
+<script src="{% static 'createstory/js/createstory.js' %}"></script>
 {% endblock javascripts %}
