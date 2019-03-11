@@ -98,7 +98,7 @@ imageButton.addEventListener('click', function () {
         fileInput.addEventListener('change', function () {
             if (fileInput.files != null && fileInput.files[0] != null) {
                 var reader = new FileReader();
-                reader.onload = function (e) {                    
+                reader.onload = function (e) {
                     request_uploadImage(getCookie("access_token"), fileInput.files[0]).then((result) => {
                         let savedUrl = result.image
                         var range = quill.getSelection(true);
@@ -114,20 +114,40 @@ imageButton.addEventListener('click', function () {
     fileInput.click();
 })
 
-// let editorSection = document.getElementById('editor-section')
-// let settingsSection = document.getElementById('settings-section')
-
 var completeButton = document.getElementById('editor-section__control__completebtn')
 var titleInput = document.getElementById('editor-section__title')
 
 // var delta
 completeButton.addEventListener('click', function () {
     var title = titleInput.value
-    var contents = quill.root.innerHTML
+    var content = quill.root.innerHTML
 
-    request_upload_story(getCookie('access_token'), title, contents).then((result) => {
+    request_upload_story(getCookie('access_token'), title, content).then((result) => {
         console.log(result)
     })
-    // editorSection.style.display = 'none'
-    // settingsSection.style.display = 'block'
+    // displaySettingsPage(title, content)
 })
+
+function displaySettingsPage(title, content) {
+    let editorSection = document.getElementById('editor-section')
+    let settingsSection = document.getElementById('settings-section')
+    let settingsTitle = document.getElementById('settings-section__title')
+    let settingsSubTitle = document.getElementById('settings-section__subtitle')
+    let settingsThumnailbox = document.getElementById('settings-section__thumnail-selection')
+
+    settingsTitle.innerHTML = "<h3>" + title + "</h3>"
+    settingsSubTitle.value = content.replace(/<[^>]*>/g, '').substring(0, 100)
+    var srcList = findAllImageSrc(content)
+    settingsThumnailbox.innerHTML
+
+    editorSection.style.display = 'none'
+    settingsSection.style.display = 'block'
+}
+
+function findAllImageSrc(content) {
+    var m, urls = [], rex = /<img[^>]+src="?([^"\s]+)"?\s*\>/g;
+    while (m = rex.exec(content)) {
+        urls.push(m[1]);
+    }
+    return urls
+}

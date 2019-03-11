@@ -105,8 +105,35 @@
     display: none;
 }
 
-.settings_section {
+.settings-section {
     max-width: 800px;
     margin: auto;
     margin-top: 30px;
+}
+
+.settings-section__title {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    width: 100%;
+}
+
+#settings-section__subtitle {
+    margin-top: 8px;
+    border: none;
+    outline: none;
+    background: transparent;
+    border-bottom: 0.8px solid rgba(0, 0, 0, .54);
+    color: rgba(0, 0, 0, .54);
+    font-size: 18px;
+    width: 100%;
+}
+
+.settings-section__thumnail-selection {
+    margin-top: 8px;
+    border: 1px solid rgba(0, 0, 0, .54);
+    width: 100%;
+    display: flex;
 }

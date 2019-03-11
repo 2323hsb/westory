@@ -36,11 +36,12 @@ let latestStoryDiv = document.getElementById("stories__latest")
 request_story_list(getCookie('access_token')).then((result) => {
     result.forEach(item => {
         var subtitle = item.content.replace(/<[^>]*>/g, '')
-        appendLatestStory(item.title, subtitle.substring(0, 100), '', item.user_username, item.user_profile_img, item.created_date)
+        var thumnailImageUrls = findAllImageSrc(item.content)
+        appendLatestStory(item.title, subtitle.substring(0, 100), thumnailImageUrls[0], item.user_username, item.user_profile_img, item.created_date)
     });
 })
 
-function appendLatestStory(title, subtitle, thumnail, username, profileImg, date) {
+function appendLatestStory(title, subtitle, thumnailUrl, username, profileImg, date) {
     var newItemDiv = document.createElement('div')
     newItemDiv.classList.add('stories__latest__item')
 
@@ -78,6 +79,7 @@ function appendLatestStory(title, subtitle, thumnail, username, profileImg, date
 
     var summaryThumnail = document.createElement('a')
     summaryThumnail.classList.add('stories__latest__item__img')
+    summaryThumnail.style.backgroundImage = 'url(' + thumnailUrl + ')'
 
     summaryAbout.appendChild(aboutProfileImage)
     summaryAbout.appendChild(aboutInfoDiv)
@@ -88,4 +90,12 @@ function appendLatestStory(title, subtitle, thumnail, username, profileImg, date
     newItemDiv.appendChild(summaryThumnail)
 
     latestStoryDiv.appendChild(newItemDiv)
+}
+
+function findAllImageSrc(content) {
+    var m, urls = [], rex = /<img[^>]+src="?([^"\s]+)"?\s*\>/g;
+    while (m = rex.exec(content)) {
+        urls.push(m[1]);
+    }
+    return urls
 }
