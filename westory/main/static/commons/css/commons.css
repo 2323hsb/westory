@@ -12,8 +12,6 @@ body {
     margin: auto;
 
     display: flex;
-    /* justify-content: space-between; */
-    /* align-items: center; */
     flex-direction: column;
     height: 140px;
 }
@@ -27,6 +25,11 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.header__profileimg {
+  width: 35px;
+  height: 35px;
 }
 
 .header__menu {
@@ -57,32 +60,20 @@ body {
   background-color: #e7f5ff;
 }
   
-/* .header__user {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  flex: 1 0 auto;
-  width: 200px;
-  border-left: 1px solid #dee3eb;
-} */
-  
 .header__logo {
   display: flex;
   flex: 1 0 auto;
   max-width: 140px;
 }
 
-/* .header__profile .btn {
-  width: 35px;
-  height: 35px;
-} */
-
 .image-cropper {
-  width: 35px;
-  height: 35px;
+  /* width: 35px;
+  height: 35px; */
   /* position: relative; */
   overflow: hidden;
   border-radius: 50%;
+  background-size: cover;
+  background-position: 35% 35%;
 }
 
 .contents {
@@ -95,18 +86,11 @@ body {
   background-color: transparent;
 }
 
-h1, h2, h3, h4, h5, h6, p {
-  margin: 0 !important;
-}
-
 h1, h2, h3, p, a {
   font-family: 'Noto Sans KR', sans-serif;
 } 
 
 a {
   text-decoration: none;
-}
-
-p {
-  color: rgba(0, 0, 0, 0.54);
+  color: inherit;
 }

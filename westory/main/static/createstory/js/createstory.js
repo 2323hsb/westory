@@ -1,16 +1,3 @@
-let WESTORY_API_BASE_URL = 'http://localhost:8001'
-
-function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
-
 const request_uploadImage = async (access_token, image) => {
     var data = new FormData()
     data.append("image", image)
@@ -117,7 +104,6 @@ imageButton.addEventListener('click', function () {
 var completeButton = document.getElementById('editor-section__control__completebtn')
 var titleInput = document.getElementById('editor-section__title')
 
-// var delta
 completeButton.addEventListener('click', function () {
     var title = titleInput.value
     var content = quill.root.innerHTML

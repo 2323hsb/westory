@@ -1,0 +1,36 @@
+{% extends "commons/base.html" %}
+{% load static %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'storydetail/css/storydetail.css' %}">
+{% endblock stylesheets %}
+{% block header %}
+{% include 'commons/header.html' %}
+{% endblock header %}
+{% block content %}
+<input type="hidden" id="story_id" value="{{ request.path }}">
+<div class="story_layout">
+    <div class="story__header">
+        <h1 class="story__header__title" id="story__header__title"></h1>
+        <p class="story__header__date" id="story__header__date"></p>
+    </div>
+    <div class="story__content" id="story__content"></div>
+    <div class="story__bottom">
+        <div class="story__bottom__actions">
+            <div class="story__bottom__actions__front">
+                <i id="story__bottom__actions__love" class="far fa-heart"></i>
+            </div>
+            <div class="story__bottom__actions__back"></div>
+        </div>
+        <div class="story__bottom__about">
+            <a id="story__bottom__about__profileimg" class="story__bottom__about__profileimg image-cropper"></a>
+            <div class="story__bottom__about__profiletxt">
+                <h2 id="story__bottom__about__profiletxt__name"></h2>
+                <p id="story__bottom__about__profiletxt__something">Overnight</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block javascripts %}
+<script src="{% static 'storydetail/js/storydetail.js' %}"></script>
+{% endblock javascripts %}

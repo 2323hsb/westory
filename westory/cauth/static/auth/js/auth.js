@@ -40,6 +40,7 @@ function set_google_auth_btn_listener() {
                                     window.location.replace('/main/posts')
                                     break
                                 case 'new':
+                                    console.log("user not exist!")
                                     signUpWithGoogle(id_token)
                                     break
                                 case 'fail':
@@ -80,7 +81,8 @@ function signUpWithGoogle(id_token) {
                 break
         }
     }).fail(function (error) {
-        console.log(error)
+        console.log('we got error')
+        // console.log(error)
     })
 }
 

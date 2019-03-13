@@ -1,0 +1,79 @@
+.story_layout {
+    margin-top: 30px;
+    width: 768px;
+    justify-content: space-between;
+}
+
+.story__header {
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15)
+}
+
+.story__header__title {
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 3em;
+    margin-bottom: 12px;
+}
+
+.story__header__date {
+    color: rgba(0, 0, 0, 0.50);
+    margin-bottom: 12px;
+}
+
+.story__content {
+    margin-top: 16px;
+}
+
+.story__content img {
+    width: 100%;
+    height: auto;
+}
+
+.stroy__content h1 {
+    color: rgba(0, 0, 0, 0.85);
+}
+.story__content h2 {
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.story__content p {
+    line-height: 1.75;
+    font-size: 1.125em;
+    color: rgba(0, 0, 0, 0.70);
+}
+
+.story__content li {
+    font-size: 1.125em;
+    color: rgba(0, 0, 0, 0.70);
+}
+
+.story__bottom {
+    margin-top: 100px;
+}
+
+.story__bottom__actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 25px;
+    color: rgba(0, 0, 0, 0.50);
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.story__bottom__about {
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+    padding-top: 50px;
+    padding-bottom: 50px;
+    display: flex;
+}
+
+.story__bottom__about__profileimg {
+    width: 150px;
+    height: 150px;
+}
+
+.story__bottom__about__profiletxt {
+    margin-left: 50px;
+}
+

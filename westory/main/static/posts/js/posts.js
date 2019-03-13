@@ -1,5 +1,4 @@
 let ACCESS_TOKEN
-let WESTORY_API_BASE_URL = 'http://localhost:8001'
 let USER_USERNAME
 let USER_PROFILE_IMAGE_URL
 let USER_POSTS
@@ -7,12 +6,6 @@ let USER_POSTS
 const POST_PAGINATION_OFFSET = 0
 const POST_PAGINATION_LIMIT = 10
 let POST_WILL_LOAD = false
-
-const REQ_SUCCESS = 'REQ_SUCCESS'
-const REQ_UNAUTHORIZED = 'REQ_UNAUTHORIZED'
-const REQ_ERROR = 'REQ_ERROR'
-
-// request
 
 const request_posts = async (access_token, limit, offset) => {
     let results
@@ -35,27 +28,6 @@ const request_posts = async (access_token, limit, offset) => {
             throw 'request_post, unauthorize error'
         } else {
             throw 'request_post, unknown error'
-        }
-    }
-}
-
-const request_user_info = async (access_token) => {
-    let results
-    try {
-        results = await $.ajax({
-            headers: {
-                accept: "application/json",
-                Authorization: "Token " + access_token,
-            },
-            url: WESTORY_API_BASE_URL + "/user",
-            type: "GET",
-        })
-        return results
-    } catch (jqXHR) {
-        if (jqXHR.status == 401) {
-            throw 'request_user_info, unauthorize error'
-        } else {
-            throw 'request_user_info, unknown error'
         }
     }
 }
@@ -271,7 +243,7 @@ function set_user_info(response) {
 function append_posts(posts, user_info, like_posts) {
     jQuery.each(posts, function (i, post) {
         var post_html = "";
-        created_date = formatDate(post.created_date)
+        created_date = dateFormatter(post.created_date)
         post_html += "<div class='posts__streams__item' data-id='" + post.id + "'>";
         post_html += "   <div class='posts__streams__item__title'>"
         post_html += "       <div class='image-cropper'><img class='posts__streams__item__title__img' src='" + post.user_profile_img + "'></div>"
@@ -305,14 +277,10 @@ function append_posts(posts, user_info, like_posts) {
 
 // display
 
-function display_user_info(user_info) {
-    $('.header__profile__pic').attr('src', user_info.profile_img)
-}
-
 function display_replies(comments_div, response) {
     comments_div.empty()
     jQuery.each(response, function (i, reply) {
-        created_date = formatDate(reply.created_date)
+        created_date = dateFormatter(reply.created_date)
         var reply_html = ""
         reply_html += "<div class='posts__streams__item__comments__item'>"
         reply_html += "<div class='posts__streams__item__comments__item__title'>"
@@ -402,10 +370,6 @@ function image_upload_event(event) {
     var reader = new FileReader();
 
     for (var i = 0, f; f = files[i]; i++) {
-        // output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-        //     f.size, ' bytes, last modified: ',
-        //     f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-        //     '</li>');
         reader.readAsDataURL(f);
         reader.onload = function () {
             $('.posts__form-box__tools__preview').html("<img src='"+ reader.result +"'/>")
@@ -470,7 +434,6 @@ $(document).ready(function () {
         next_page_urls.val = responses[1].next
         const like_posts = responses[2]
 
-        display_user_info(user_info)
         append_posts(posts, user_info, like_posts)
 
         set_scroll_refresh_event(next_page_urls, user_info, like_posts)
@@ -509,34 +472,6 @@ function signOut() {
     window.location.replace('http://localhost:8000/')
 }
 
-function formatDate(date) {
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-    hour = d.getHours();
-    min = d.getMinutes();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    var create_time = new Date(date).getTime()
-    var now = new Date()
-    var sec_gap = (now - create_time) / 1000
-    if (sec_gap < 60) {
-        return Math.floor(sec_gap) + '초 전'
-    }
-    var min_gap = sec_gap / 60
-    if (min_gap < 60) {
-        return Math.floor(min_gap) + '분 전'
-    }
-    var hour_gap = min_gap / 60
-    if (hour_gap < 24) {
-        return Math.floor(hour_gap) + '시간 전'
-    }
-    return year + '년 ' + month + '월 ' + day + '일'
-}
-
 function uploadImage(image) {
     var data = new FormData();
     data.append("image", image);
@@ -558,40 +493,8 @@ function uploadImage(image) {
     });
 }
 
-// function sendFile(file, editor, welEditable) {
-//     console.log('sendfile');
-//     data = new FormData();
-//     data.append("file", file);
-//     $.ajax({
-//         data: data,
-//         type: "POST",
-//         url: "url",
-//         cache: false,
-//         contentType: false,
-//         processData: false,
-//         success: function(url) {
-//             editor.insertImage(welEditable, url);
-//         }
-//     });
-// }
-
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
-
-function deleteCookie(name) {
-    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
 before_dom_load()

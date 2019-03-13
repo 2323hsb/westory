@@ -1,16 +1,3 @@
-let WESTORY_API_BASE_URL = 'http://localhost:8001'
-
-function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
-
 const request_story_list = async (access_token) => {
     let results
     try {
@@ -37,11 +24,11 @@ request_story_list(getCookie('access_token')).then((result) => {
     result.forEach(item => {
         var subtitle = item.content.replace(/<[^>]*>/g, '')
         var thumnailImageUrls = findAllImageSrc(item.content)
-        appendLatestStory(item.title, subtitle.substring(0, 100), thumnailImageUrls[0], item.user_username, item.user_profile_img, item.created_date)
+        appendLatestStory(item.hash_id, item.title, subtitle.substring(0, 100), thumnailImageUrls[0], item.user_username, item.user_profile_img, item.created_date)
     });
 })
 
-function appendLatestStory(title, subtitle, thumnailUrl, username, profileImg, date) {
+function appendLatestStory(hashID, title, subtitle, thumnailUrl, username, profileImg, date) {
     var newItemDiv = document.createElement('div')
     newItemDiv.classList.add('stories__latest__item')
 
@@ -50,7 +37,7 @@ function appendLatestStory(title, subtitle, thumnailUrl, username, profileImg, d
 
     var summaryTitleDiv = document.createElement('div')
     summaryTitleDiv.classList.add('stories__latest__item__summary__titlediv')
-    summaryTitleDiv.innerHTML = '<a><h3>' + title + '</h3></a>'
+    summaryTitleDiv.innerHTML = '<a href="/main/stories/'+ hashID +'"><h3>' + title + '</h3></a>'
 
     var summarySubTitleDiv = document.createElement('div')
     summarySubTitleDiv.classList.add('stories__latest__item__summary__subtitlediv')
@@ -65,15 +52,16 @@ function appendLatestStory(title, subtitle, thumnailUrl, username, profileImg, d
     aboutProfileImage.style.backgroundImage = 'url(' + profileImg + ')'
 
     var aboutInfoDiv = document.createElement('div')
+    aboutInfoDiv.classList.add('stories__latest__item__summary__about__profiletxt')
     var aboutUsername = document.createElement('p')
     var aboutUsernameLink = document.createElement('a')
-    aboutUsername.classList.add('stories__latest__item__summary__about__name')
+    aboutUsername.classList.add('stories__latest__item__summary__about__profiletxt__name')
     aboutUsernameLink.innerHTML = username
     aboutUsername.appendChild(aboutUsernameLink)
 
     var aboutDate = document.createElement('p')
-    aboutDate.classList.add('stories__latest__item__summary__about__date')
-    aboutDate.innerHTML = date
+    aboutDate.classList.add('stories__latest__item__summary__about__profiletxt__date')
+    aboutDate.innerHTML = dateFormatter(date)
     aboutInfoDiv.appendChild(aboutUsername)
     aboutInfoDiv.appendChild(aboutDate)
 

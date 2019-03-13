@@ -5,6 +5,7 @@ app_name = 'main'
 
 urlpatterns = [
     path('stories', views.StoriesView.as_view()),
+    path('stories/<str:serial_id>', views.StoryDetailView.as_view()),
     path('posts', views.PostsView.as_view()),
     path('conditions', views.ConditionsView.as_view()),
     path('test', views.CreateStoryView.as_view()),
