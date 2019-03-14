@@ -246,7 +246,7 @@ function append_posts(posts, user_info, like_posts) {
         created_date = dateFormatter(post.created_date)
         post_html += "<div class='posts__streams__item' data-id='" + post.id + "'>";
         post_html += "   <div class='posts__streams__item__title'>"
-        post_html += "       <div class='image-cropper'><img class='posts__streams__item__title__img' src='" + post.user_profile_img + "'></div>"
+        post_html += "       <img class='posts__streams__item__title__img image-cropper' src='" + post.user_profile_img + "'>"
         post_html += "       <div class='posts_streams_item__title__text'>"
         post_html += "           <div class='posts__streams__item__title__text__name'>" + post.user_username + "</div>"
         post_html += "           <div class='posts__streams__item__title__text__time'>" + created_date + "</div>"
@@ -263,7 +263,7 @@ function append_posts(posts, user_info, like_posts) {
         post_html += "   </div>"
         post_html += "   <div class='posts__streams__item__comments'></div>"
         post_html += "   <div class='posts__streams__item__comment-form'>"
-        post_html += "       <div class='image-cropper'><img class='posts__streams__item__comment-form__img' src='" + user_info.profile_img + "'></div>"
+        post_html += "       <img class='posts__streams__item__comment-form__img image-cropper' src='" + user_info.profile_img + "'>"
         post_html += "       <form class='posts__streams__item__comment-form__form' method='POST'>"
         post_html += "          <input class='posts__streams__item__comment-form__form__input' placeholder='댓글을 입력하세요'>"
         post_html += "          <button class='posts__streams__item__comment-form__form__btn btn'>달기</button>"

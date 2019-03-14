@@ -63,10 +63,8 @@
 }
 
 .posts__streams__item__title__img {
-    display: inline;
-    margin: 0 auto;
-    height: 100%;
-    width: auto;
+    height: 40px;
+    width: 40px;
 }
 
 .posts_streams_item__title__text {
@@ -173,10 +171,8 @@
 }
 
 .posts__streams__item__comment-form__img {
-    display: inline;
-    margin: 0 auto;
-    height: 100%;
-    width: auto;
+    width: 35px;
+    height: 35px;
 }
 
 .posts__streams__item__comment-form__form {

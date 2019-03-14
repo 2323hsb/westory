@@ -19,7 +19,6 @@ const requestStoryByID = async (accessToken, storyID) => {
 }
 
 const requestLoveStory = async (access_token, storyID, isLover) => {
-    console.log(isLover)
     let results
     try {
         results = await $.ajax({
@@ -67,7 +66,6 @@ function like_a_post_event() {
 }
 
 requestStoryByID(getCookie('access_token'), getStoryID()).then((result) => {
-    console.log(result)
     let title = document.getElementById('story__header__title')
     let date = document.getElementById('story__header__date')
     let content = document.getElementById('story__content')
