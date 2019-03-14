@@ -1,5 +1,3 @@
-let WESTORY_API_BASE_URL = 'http://localhost:8001'
-
 function onGoogleJSLoaded() {
     var access_token = getCookie('access_token')
     if (access_token) {

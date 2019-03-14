@@ -18,7 +18,8 @@ const requestStoryByID = async (accessToken, storyID) => {
     }
 }
 
-const requestLoveStory = async (access_token, storyID, isLove) => {
+const requestLoveStory = async (access_token, storyID, isLover) => {
+    console.log(isLover)
     let results
     try {
         results = await $.ajax({
@@ -26,11 +27,11 @@ const requestLoveStory = async (access_token, storyID, isLove) => {
                 accept: "application/json",
                 Authorization: "Token " + access_token,
             },
-            url: WESTORY_API_BASE_URL + '/lovestory',
+            url: WESTORY_API_BASE_URL + '/story/' + storyID + '/love',
             type: "POST",
             data: {
                 story_id: storyID,
-                is_love: isLove,
+                is_lover: isLover,
             },
         })
         return results
@@ -73,17 +74,30 @@ requestStoryByID(getCookie('access_token'), getStoryID()).then((result) => {
     let profileImg = document.getElementById('story__bottom__about__profileimg')
     let profileName = document.getElementById('story__bottom__about__profiletxt__name')
     let profileSomething = document.getElementById('story__bottom__about__profiletxt__something')
+    let loversCount = document.getElementById('story__bottom__actions__love__count')
+    let LoverIcon = document.getElementById('story__bottom__actions__love')
 
     title.innerHTML = result[0].title
     date.innerHTML = dateFormatter(result[0].created_date, 1)
     content.innerHTML = result[0].content
     profileImg.style.backgroundImage = 'url(' + result[0].user_profile_img + ')'
     profileName.innerHTML = result[0].user_username
-})
+    loversCount.innerHTML = result[0].lovers_count
 
-let storyLove = document.getElementById('story__bottom__actions__love')
-storyLove.addEventListener('click', function (e) {
-    requestLoveStory(getCookie('access_token'), getStoryID(), True).then((result) => {
+    var isLover = result[0].is_lover
+    if (isLover) {
+        LoverIcon.classList.add('fas')
+    } else {
+        LoverIcon.classList.add('far')
+    }
 
+    let storyLove = document.getElementById('story__bottom__actions__love')
+    storyLove.addEventListener('click', function (e) {
+        requestLoveStory(getCookie('access_token'), getStoryID(), !isLover).then((result) => {
+            isLover = !isLover
+            LoverIcon.classList.toggle('fas')
+            LoverIcon.classList.toggle('far')
+            loversCount.innerHTML = result.lovers_count
+        })
     })
 })
