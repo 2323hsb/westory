@@ -13,11 +13,7 @@ const request_user_info = async (access_token) => {
         })
         return results
     } catch (jqXHR) {
-        if (jqXHR.status == 401) {
-            throw 'request_user_info, unauthorize error'
-        } else {
-            throw 'request_user_info, unknown error'
-        }
+        throw jqXHR.status
     }
 }
 
@@ -66,11 +62,30 @@ function deleteCookie(name) {
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-function setUserInformations() {
+function checkUser() {
     request_user_info(getCookie('access_token')).then((result) => {
         let profileImage = document.getElementById('header__profileimg')
         profileImage.style.backgroundImage = 'url(' + result[0].profile_img + ')'
+        changeLoginState(true)
+    }).catch((reason) => {
+        switch (reason) {
+            case 401:
+                changeLoginState(false)
+                break;
+            default:
+                console.log('unexpected error')
+        }
     })
 }
 
-setUserInformations()
+function changeLoginState(isLogin) {
+    if (isLogin) {
+        document.getElementById('headerNotLogin').style.display = 'none'
+        document.getElementById('headerLogin').style.display = 'block'
+    } else {
+        document.getElementById('headerLogin').style.display = 'none'
+        document.getElementById('headerNotLogin').style.display = 'block'
+    }
+}
+
+checkUser()

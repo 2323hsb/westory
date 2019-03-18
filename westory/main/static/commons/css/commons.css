@@ -6,25 +6,39 @@ body {
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
 }
 
-.header__section {
-    max-width: 1000px;
-    padding: 0px 8px 0px 8px;
-    margin: auto;
-
-    display: flex;
-    flex-direction: column;
-    height: 140px;
+.header__position {
+  max-width: 1000px;
+  height: 140px;
+  margin: auto;
+  padding: 0px 30px 0px 30px;
+  display: flex;
+  flex-direction: column;
 }
 
-.header__contents {
-    flex: 1 0 auto;
-    width: 100%;
-    padding: 0px 5px 0px 5px;
-    margin-top: 20px;
-  
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.header__meta {
+  flex: 1 0 auto;
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.header__meta__logo {
+  flex: 1 1 auto;
+}
+
+.header__meta__user {
+  flex: 0 0 auto;
+  display: none;
+}
+
+.header__meta__user__menu {
+  color: rgba(0, 0, 0, 0.40);
+  margin-left: 16px;
+}
+
+.header__meta__user__menu--highlight {
+  color: #66a80f;
 }
 
 .header__profileimg {
@@ -33,13 +47,12 @@ body {
 }
 
 .header__menu {
-    flex: 1 0 auto;
-    width: 600px;
-    padding: 5px;
-  
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+  flex: 1 0 auto;
+  width: 600px;
+  padding: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .header__menu__item {
@@ -48,18 +61,17 @@ body {
   align-items: center;
   width: 90px;
   height: 40px;
-
   cursor: pointer;
 }
 
 .header__menu__item p {
   font-size: 18px;
 }
-  
+
 .header__menu__item:hover {
   background-color: #e7f5ff;
 }
-  
+
 .header__logo {
   display: flex;
   flex: 1 0 auto;
@@ -88,9 +100,10 @@ body {
 
 h1, h2, h3, p, a {
   font-family: 'Noto Sans KR', sans-serif;
-} 
+}
 
 a {
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }

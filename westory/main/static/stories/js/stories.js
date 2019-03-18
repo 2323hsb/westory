@@ -1,10 +1,10 @@
-const request_story_list = async (access_token) => {
+const request_story_list = async () => {
     let results
     try {
         results = await $.ajax({
-            headers: {
-                Authorization: "Token " + access_token,
-            },
+            // headers: {
+            //     Authorization: "Token " + access_token,
+            // },
             url: WESTORY_API_BASE_URL + "/story",
             type: "GET",
         })
@@ -20,7 +20,7 @@ const request_story_list = async (access_token) => {
 
 let latestStoryDiv = document.getElementById("stories__latest")
 
-request_story_list(getCookie('access_token')).then((result) => {
+request_story_list().then((result) => {
     result.forEach(item => {
         var subtitle = item.content.replace(/<[^>]*>/g, '')
         var thumnailImageUrls = findAllImageSrc(item.content)

@@ -23,7 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', AuthView.as_view(), name='auth'),
     # path('home', HomeView.as_view(), name='home'),
-    path('', AuthView.as_view(), name='auth'),
+    # path('', AuthView.as_view(), name='auth'),
+    path('', include('main.urls')),
     path('auth/', AuthView.as_view(), name='auth'),
-    path('main/', include('main.urls')),
+    # path('main/', include('main.urls')),
 ]
