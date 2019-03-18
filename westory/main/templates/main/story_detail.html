@@ -7,39 +7,51 @@
 {% include 'commons/header.html' %}
 {% endblock header %}
 {% block content %}
-<input type="hidden" id="story_id" value="{{ request.path }}">
-<div class="story_layout">
-    <div class="story__header">
-        <h1 class="story__header__title" id="story__header__title"></h1>
-        <p class="story__header__date" id="story__header__date"></p>
+<input type="hidden" id="storyArticleID" value="{{ request.path }}">
+<article class="storyArticle">
+    <div class="storyArticle__header">
+        <h1 class="storyArticle__header__title" id="storyTitle"></h1>
+        <p class="storyArticle__header__date" id="storyDate"></p>
     </div>
-    <div class="story__content" id="story__content"></div>
-    <div class="story__bottom">
-        <div class="story__bottom__actions">
-            <div class="story__bottom__actions__front">
-                <i id="story__bottom__actions__love" class="fa-heart"></i>
-                <p id="story__bottom__actions__love__count"></p>
+    <div class="storyArticle__content" id="storyContent"></div>
+    <div class="storyArticle__bottom">
+        <div class="storyArticle__bottom__actions">
+            <div class="storyArticle__bottom__actions__front">
+                <i id="storyActionLove" class="fa-heart"></i>
+                <p id="storyActionLoveCounter"></p>
             </div>
-            <div class="story__bottom__actions__back"></div>
+            <div class="storyArticle__bottom__actions__back"></div>
         </div>
-        <div class="story__bottom__about">
-            <a id="story__bottom__about__profileimg" class="story__bottom__about__profileimg image-cropper"></a>
-            <div class="story__bottom__about__profiletxt">
-                <h2 id="story__bottom__about__profiletxt__name"></h2>
-                <p id="story__bottom__about__profiletxt__something">Overnight</p>
+        <div class="storyArticle__bottom__about">
+            <a id="storyProfileImg" class="storyArticle__bottom__about__profileimg image-cropper"></a>
+            <div class="storyArticle__bottom__about__profiletxt">
+                <h2 id="storyProfileName"></h2>
+                <p id="storyProfileText">Overnight</p>
             </div>
         </div>
     </div>
-    <section class="story__comments">
+    <div class="storyArticle__commentInput">
         <h3>댓글</h3>
-        <div>
-            
-        </div>
-        <textarea id="story__comments__inputarea" rows="1"></textarea>
-        <button class="story__comments__submitbtn">댓글 작성</button>
-    </section>
-</div>
-{% endblock content %}
-{% block javascripts %}
-<script src="{% static 'storydetail/js/storydetail.js' %}"></script>
-{% endblock javascripts %}
+        <textarea class="storyArticle__comments__textarea hsb__textarea" id="storyCommentTextarea" rows="1"></textarea>
+        <button class="storyArticle__comments__submitbtn hsb__btn hsb_btn--primary" id="storyCommentSubmitBtn">댓글 작성</button>
+    </div>
+    <div class="storyArticle__comments" id="storyArticleComments">
+        <!-- <div class="storyArticle__comment">
+            <div class="nametag">
+                <a class="nametag__img  image-cropper"
+                    style="background-image: url('https://lh5.googleusercontent.com/-kodfzN5g03I/AAAAAAAAAAI/AAAAAAAACV0/OgcysBaxKJY/s96-c/photo.jpg');"></a>
+                <div class="nametag__profile">
+                    <p class="nametag__profile__name">정현규</p>
+                    <p class="nametag__profile__date">2019년 3월 8일</p>
+                </div>
+            </div>
+            <div class="stroyArticle__comment__content">
+                <p>댓글 테스트 댓글 테스트 댓글 테스트 댓글 테스트 댓글 테스트 댓글 테스트 댓글 테스트 </p>
+            </div>
+        </div> -->
+    </div>
+</article>
+    {% endblock content %}
+    {% block javascripts %}
+    <script src="{% static 'storydetail/js/storydetail.js' %}"></script>
+    {% endblock javascripts %}

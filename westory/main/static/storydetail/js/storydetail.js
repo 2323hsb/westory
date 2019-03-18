@@ -43,37 +43,66 @@ const requestLoveStory = async (access_token, storyID, isLover) => {
     }
 }
 
+const submitComment = async (access_token, storyID, content) => {
+    let results
+    try {
+        results = await $.ajax({
+            headers: {
+                accept: "application/json",
+                Authorization: "Token " + access_token,
+            },
+            url: WESTORY_API_BASE_URL + '/story/' + storyID + '/comment',
+            type: "POST",
+            data: {
+                content: content,
+            },
+        })
+        return results
+    } catch (jqXHR) {
+        if (jqXHR.status == 401) {
+            throw 'submitComment, unauthorize error'
+        } else {
+            throw 'submitComment, unknown error'
+        }
+    }
+}
+
+const requestComments = async (access_token, storyID) => {
+    let results
+    try {
+        results = await $.ajax({
+            headers: {
+                accept: "application/json",
+                Authorization: "Token " + access_token,
+            },
+            url: WESTORY_API_BASE_URL + '/story/' + storyID + '/comment',
+            type: "GET",
+        })
+        return results
+    } catch (jqXHR) {
+        if (jqXHR.status == 401) {
+            throw 'requestComments, unauthorize error'
+        } else {
+            throw 'requestComments, unknown error'
+        }
+    }
+}
+
 function getStoryID() {
-    var currentURL = document.getElementById('story_id').value
+    var currentURL = document.getElementById('storyArticleID').value
     var lastURLsegment = currentURL.substr(currentURL.lastIndexOf('/') + 1)
     return lastURLsegment
 }
 
-function like_a_post_event() {
-    var post_id = $(this).parents('.posts__streams__item').data('id')
-    request_like_a_post(ACCESS_TOKEN, post_id, true).then((result) => {
-        request_like_post_ids(ACCESS_TOKEN, post_id).then((result) => {
-            var like_count = result.like_count
-            var is_like = result.is_like
-            if (is_like) {
-                $(this).toggleClass('posts__streams__item__tools__like--unlike posts__streams__item__tools__like--like')
-                $(this).html("<i class='far fa-thumbs-up'></i> " + like_count)
-            }
-        })
-    }).catch((req_status) => {
-        console.log(req_status)
-    })
-}
-
 requestStoryByID(getCookie('access_token'), getStoryID()).then((result) => {
-    let title = document.getElementById('story__header__title')
-    let date = document.getElementById('story__header__date')
-    let content = document.getElementById('story__content')
-    let profileImg = document.getElementById('story__bottom__about__profileimg')
-    let profileName = document.getElementById('story__bottom__about__profiletxt__name')
-    let profileSomething = document.getElementById('story__bottom__about__profiletxt__something')
-    let loversCount = document.getElementById('story__bottom__actions__love__count')
-    let LoverIcon = document.getElementById('story__bottom__actions__love')
+    let title = document.getElementById('storyTitle')
+    let date = document.getElementById('storyDate')
+    let content = document.getElementById('storyContent')
+    let profileImg = document.getElementById('storyProfileImg')
+    let profileName = document.getElementById('storyProfileName')
+    let profileSomething = document.getElementById('storyProfileText')
+    let loversCount = document.getElementById('storyActionLoveCounter')
+    let LoverIcon = document.getElementById('storyActionLove')
 
     title.innerHTML = result[0].title
     date.innerHTML = dateFormatter(result[0].created_date, 1)
@@ -89,13 +118,61 @@ requestStoryByID(getCookie('access_token'), getStoryID()).then((result) => {
         LoverIcon.classList.add('far')
     }
 
-    let storyLove = document.getElementById('story__bottom__actions__love')
-    storyLove.addEventListener('click', function (e) {
+    LoverIcon.addEventListener('click', function (e) {
         requestLoveStory(getCookie('access_token'), getStoryID(), !isLover).then((result) => {
             isLover = !isLover
             LoverIcon.classList.toggle('fas')
             LoverIcon.classList.toggle('far')
             loversCount.innerHTML = result.lovers_count
         })
+    })
+
+    getComments(document.getElementById('storyArticleComments'))
+})
+
+function getComments(target) {
+    requestComments(getCookie('access_token'), getStoryID()).then((result) => {
+        target.innerHTML = ''
+        result.forEach(element => {
+            var a = document.createElement('div')
+            a.classList.add('storyArticle__comment')
+            var b = document.createElement('div')
+            b.classList.add('nametag')
+            var c = document.createElement('a')
+            c.classList.add('nametag__img')
+            c.classList.add('image-cropper')
+            c.style.backgroundImage = 'url(' + element.user_profile_img + ')'
+            var d = document.createElement('div')
+            d.classList.add('nametag__profile')
+            var e = document.createElement('p')
+            e.innerHTML = element.user_username
+            e.classList.add('nametag__profile__name')
+            var f = document.createElement('p')
+            f.innerHTML = dateFormatter(element.created_date)
+            f.classList.add('nametag__profile__date')
+            var g = document.createElement('div')
+            g.classList.add('stroyArticle__comment__content')
+            var h = document.createElement('p')
+            h.innerHTML = element.content
+
+            d.appendChild(e)
+            d.appendChild(f)
+            b.appendChild(c)
+            b.appendChild(d)
+            g.appendChild(h)
+            a.appendChild(b)
+            a.appendChild(g)
+
+            target.appendChild(a)
+        });
+    })
+}
+
+var commentSubmitBtn = document.getElementById('storyCommentSubmitBtn')
+var commentTextarea = document.getElementById('storyCommentTextarea')
+commentSubmitBtn.addEventListener('click', function (e) {
+    var a = commentTextarea.value
+    submitComment(getCookie('access_token'), getStoryID(), a).then((result) => {
+        getComments(document.getElementById('storyArticleComments'))
     })
 })
