@@ -89,3 +89,114 @@ function changeLoginState(isLogin) {
 }
 
 checkUser()
+
+function loadGoogleAuthJS() {
+    // console.log("onGoogleJSLoaded()")
+    gapi.load('auth2', function () {
+        // console.log("on gapi loaded")
+        gapi.auth2.init({
+            client_id: '877944658856-1tr4gmmtc8nm4ur7m1p3jv2e9omm8fo3.apps.googleusercontent.com'
+        }).then(function () {
+            // console.log("on gapi inited with client id")
+            var authInstance = gapi.auth2.getAuthInstance()
+            // console.log(authInstance)
+            authInstance.signIn({
+                scope: 'profile email',
+            }).then((googleUser) => {loginWithGoogleAccount(googleUser)})
+        })
+    })
+    // var access_token = getCookie('access_token')
+    // if (access_token) {
+    //     window.location.replace('/main/posts')
+    // } else {
+    //     set_google_auth_btn_listener()
+    // }
+}
+
+function loginWithGoogleAccount(googleUser) {
+    var id_token = googleUser.getAuthResponse().id_token;
+    console.log('get id_token from google')
+    var payload = {
+        id_token: id_token,
+    }
+    $.ajax({
+        headers: {
+            accept: "application/json",
+        },
+        url: WESTORY_API_BASE_URL + '/auth/signIn',
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        dataType: "json"
+    }).done(function (response) {
+        switch (response.status) {
+            case 'success':
+                document.cookie = "access_token=" + response.access_token
+                window.location.replace('.')
+                break
+            case 'new':
+                console.log("user not exist!")
+                signUpWithGoogle(id_token)
+                break
+            case 'fail':
+                console.log(response)
+                break
+        }
+    }).fail(function (error) {
+        console.log(error)
+    })
+}
+
+var loginBtn = document.getElementById('headerLoginBtn')
+loginBtn.addEventListener('click', async function () {
+    var googleAccount = await loadGoogleAuthJS();
+})
+
+function set_google_auth_btn_listener() {
+    gapi.load('auth2', function () {
+        gapi.auth2.init({
+            client_id: '877944658856-1tr4gmmtc8nm4ur7m1p3jv2e9omm8fo3.apps.googleusercontent.com'
+        }).then(
+            function () {
+                var authInstance = gapi.auth2.getAuthInstance()
+                $('.authbox__buttons__google').on('click', function () {
+                    authInstance.signIn({
+                        scope: 'profile email',
+                    }).then(function (googleUser) {
+                        var id_token = googleUser.getAuthResponse().id_token;
+                        var payload = {
+                            id_token: id_token,
+                        }
+                        $.ajax({
+                            headers: {
+                                accept: "application/json",
+                            },
+                            url: WESTORY_API_BASE_URL + '/auth/signIn',
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(payload),
+                            dataType: "json"
+                        }).done(function (response) {
+                            switch (response.status) {
+                                case 'success':
+                                    document.cookie = "access_token=" + response.access_token
+                                    window.location.replace('/main/posts')
+                                    break
+                                case 'new':
+                                    console.log("user not exist!")
+                                    signUpWithGoogle(id_token)
+                                    break
+                                case 'fail':
+                                    console.log(response)
+                                    break
+                            }
+                        }).fail(function (error) {
+                            console.log(error)
+                        })
+                    })
+                })
+            }, function () {
+                console.log('onError')
+            })
+    });
+}
