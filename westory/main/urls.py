@@ -9,7 +9,5 @@ urlpatterns = [
     path('stories/<str:serial_id>', views.StoryDetailView.as_view()),
     path('posts', views.PostsView.as_view()),
     path('conditions', views.ConditionsView.as_view()),
-    path('test', views.CreateStoryView.as_view()),
-    # path('post', views.PostListView.as_view()),
-    # path('create', views.CreateView.as_view()),
+    path('story/create', views.CreateStoryView.as_view()),
 ]

@@ -30,6 +30,7 @@ body {
 .header__meta__user {
   flex: 0 0 auto;
   display: none;
+  position: relative;
 }
 
 .header__meta__user__menu {
@@ -41,7 +42,7 @@ body {
   color: #66a80f;
 }
 
-.header__profileimg {
+.header__meta__user__profileimg {
   width: 35px;
   height: 35px;
 }
@@ -79,9 +80,6 @@ body {
 }
 
 .image-cropper {
-  /* width: 35px;
-  height: 35px; */
-  /* position: relative; */
   overflow: hidden;
   border-radius: 50%;
   background-size: cover;
@@ -106,4 +104,29 @@ a {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+}
+
+/* dropdown test */
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  left: -64.5px;
+  background-color: #ffffff;
+  width: 160px;
+  margin-top: 8px;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  /* color: black; */
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 12px;
+}
+
+.display-block {
+  display: block;
 }

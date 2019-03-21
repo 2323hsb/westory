@@ -1,22 +1,5 @@
 let WESTORY_API_BASE_URL = 'http://localhost:8001'
 
-const request_user_info = async (access_token) => {
-    let results
-    try {
-        results = await $.ajax({
-            headers: {
-                accept: "application/json",
-                Authorization: "Token " + access_token,
-            },
-            url: WESTORY_API_BASE_URL + "/user",
-            type: "GET",
-        })
-        return results
-    } catch (jqXHR) {
-        throw jqXHR.status
-    }
-}
-
 function dateFormatter(date, type = 0) {
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -62,141 +45,145 @@ function deleteCookie(name) {
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-function checkUser() {
-    request_user_info(getCookie('access_token')).then((result) => {
-        let profileImage = document.getElementById('header__profileimg')
-        profileImage.style.backgroundImage = 'url(' + result[0].profile_img + ')'
-        changeLoginState(true)
-    }).catch((reason) => {
-        switch (reason) {
-            case 401:
-                changeLoginState(false)
-                break;
-            default:
-                console.log('unexpected error')
-        }
-    })
-}
-
 function changeLoginState(isLogin) {
     if (isLogin) {
-        document.getElementById('headerNotLogin').style.display = 'none'
-        document.getElementById('headerLogin').style.display = 'block'
+        document.getElementById('headerLogin').classList.toggle('display-block')
     } else {
-        document.getElementById('headerLogin').style.display = 'none'
-        document.getElementById('headerNotLogin').style.display = 'block'
+        document.getElementById('headerNotLogin').classList.toggle('display-block')
     }
 }
 
-checkUser()
+let loginBtn = document.getElementById('headerLoginBtn')
+loginBtn.addEventListener('click', async () => {
+    try {
+        let googleAccount = await getGoogleUser();
+        var response = await loginWithGoogleAccount(googleAccount)
+        if (response.access_token) {
+            document.cookie = "access_token=" + response.access_token
+        } else {
+            // 수정 필요
+            await signUpWithGoogleAccount(googleAccount)
+            response = await loginWithGoogleAccount(googleAccount)
+            if (response.access_token) {
+                document.cookie = "access_token=" + response.access_token
+            }
+        }
+        window.location.replace('.')
+    } catch (message) {
+        console.log(message)
+    }
+})
 
-function loadGoogleAuthJS() {
-    // console.log("onGoogleJSLoaded()")
-    gapi.load('auth2', function () {
-        // console.log("on gapi loaded")
-        gapi.auth2.init({
-            client_id: '877944658856-1tr4gmmtc8nm4ur7m1p3jv2e9omm8fo3.apps.googleusercontent.com'
-        }).then(function () {
-            // console.log("on gapi inited with client id")
-            var authInstance = gapi.auth2.getAuthInstance()
-            // console.log(authInstance)
-            authInstance.signIn({
-                scope: 'profile email',
-            }).then((googleUser) => {loginWithGoogleAccount(googleUser)})
+let logoutBtn = document.getElementById('logout_btn')
+logoutBtn.addEventListener('click', () => {
+    deleteCookie('access_token')
+    window.location.replace('.')
+})
+
+const gapiAuthInitVal = { client_id: '877944658856-1tr4gmmtc8nm4ur7m1p3jv2e9omm8fo3.apps.googleusercontent.com', }
+const gapiAuthScope = { scope: 'profile email', }
+function getGoogleUser() {
+    return new Promise((resolve, reject) => {
+        gapi.load('auth2', _ => {
+            gapi.auth2.init(gapiAuthInitVal)
+                .then(_ => {
+                    gapi.auth2.getAuthInstance().signIn(gapiAuthScope)
+                        .then((googleUser) => { resolve(googleUser) })
+                        .catch((error) => { reject(error) })
+                })
+                .catch((error) => { reject(error) })
         })
     })
-    // var access_token = getCookie('access_token')
-    // if (access_token) {
-    //     window.location.replace('/main/posts')
-    // } else {
-    //     set_google_auth_btn_listener()
-    // }
 }
 
 function loginWithGoogleAccount(googleUser) {
-    var id_token = googleUser.getAuthResponse().id_token;
-    console.log('get id_token from google')
-    var payload = {
-        id_token: id_token,
-    }
-    $.ajax({
-        headers: {
-            accept: "application/json",
-        },
-        url: WESTORY_API_BASE_URL + '/auth/signIn',
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(payload),
-        dataType: "json"
-    }).done(function (response) {
-        switch (response.status) {
-            case 'success':
-                document.cookie = "access_token=" + response.access_token
-                window.location.replace('.')
-                break
-            case 'new':
-                console.log("user not exist!")
-                signUpWithGoogle(id_token)
-                break
-            case 'fail':
-                console.log(response)
-                break
+    return new Promise((resolve, reject) => {
+        var payload = {
+            id_token: googleUser.getAuthResponse().id_token,
         }
-    }).fail(function (error) {
-        console.log(error)
+        $.ajax({
+            headers: {
+                accept: "application/json",
+            },
+            url: WESTORY_API_BASE_URL + '/auth/signIn',
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            dataType: "json"
+        }).done((response) => {
+            resolve(response)
+        }).fail((error) => {
+            reject('Network or Server Error: ' + error)
+        })
     })
 }
 
-var loginBtn = document.getElementById('headerLoginBtn')
-loginBtn.addEventListener('click', async function () {
-    var googleAccount = await loadGoogleAuthJS();
-})
+function signUpWithGoogleAccount(googleUser) {
+    return new Promise((resolve, reject) => {
+        var payload = {
+            id_token: googleUser.getAuthResponse().id_token,
+        }
+        $.ajax({
+            headers: {
+                accept: "application/json",
+            },
+            url: WESTORY_API_BASE_URL + '/auth/signUpWithGoogle',
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            dataType: "json"
+        }).done((response) => {
+            resolve(response)
+        }).fail((error) => {
+            reject('Network or Server Error: ' + error)
+        })
+    })
+}
 
-function set_google_auth_btn_listener() {
-    gapi.load('auth2', function () {
-        gapi.auth2.init({
-            client_id: '877944658856-1tr4gmmtc8nm4ur7m1p3jv2e9omm8fo3.apps.googleusercontent.com'
-        }).then(
-            function () {
-                var authInstance = gapi.auth2.getAuthInstance()
-                $('.authbox__buttons__google').on('click', function () {
-                    authInstance.signIn({
-                        scope: 'profile email',
-                    }).then(function (googleUser) {
-                        var id_token = googleUser.getAuthResponse().id_token;
-                        var payload = {
-                            id_token: id_token,
-                        }
-                        $.ajax({
-                            headers: {
-                                accept: "application/json",
-                            },
-                            url: WESTORY_API_BASE_URL + '/auth/signIn',
-                            type: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(payload),
-                            dataType: "json"
-                        }).done(function (response) {
-                            switch (response.status) {
-                                case 'success':
-                                    document.cookie = "access_token=" + response.access_token
-                                    window.location.replace('/main/posts')
-                                    break
-                                case 'new':
-                                    console.log("user not exist!")
-                                    signUpWithGoogle(id_token)
-                                    break
-                                case 'fail':
-                                    console.log(response)
-                                    break
-                            }
-                        }).fail(function (error) {
-                            console.log(error)
-                        })
-                    })
-                })
-            }, function () {
-                console.log('onError')
-            })
-    });
+function requestUserInfo(access_token) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            headers: {
+                accept: "application/json",
+                Authorization: "Token " + access_token,
+            },
+            url: WESTORY_API_BASE_URL + "/user",
+            type: "GET",
+        }).done((response) => {
+            resolve(response[0])
+        }).fail((error) => {
+            reject(error)
+        })
+    })
+}
+
+function setProfileUI(user) {
+    let profileImage = document.getElementById('header__profileimg')
+    profileImage.style.backgroundImage = 'url(' + user.profile_img + ')'
+    profileImage.addEventListener('click', function () {
+        document.getElementById("profile-dropdown").classList.toggle("display-block");
+    })
+}
+
+requestUserInfo(getCookie('access_token'))
+    .then((user) => {
+        changeLoginState(true)
+        setProfileUI(user)
+    })
+    .catch((message) => {
+        changeLoginState(false)
+    })
+
+// 드롭다운 메뉴 관련
+window.onclick = function (event) {
+    if (!event.target.matches('.dropdown-btn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('display-block')) {
+                openDropdown.classList.remove('display-block');
+            }
+        }
+    }
 }

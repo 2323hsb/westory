@@ -8,7 +8,7 @@
 .stories__layout__leftside {
     flex: 1 1 auto;
     display: block;
-    max-width: 680px;
+    /* max-width: 680px; */
 }
 
 .stories__layout__rightside {

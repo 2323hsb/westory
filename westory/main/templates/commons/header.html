@@ -8,18 +8,21 @@
             <a class="header__meta__user__menu" id="headerLoginBtn">로그인</a>
         </div>
         <div class="header__meta__user" id="headerLogin">
-            <a class="header__meta__user__profileimg image-cropper" id="header__profileimg"></a>
+            <a class="header__meta__user__profileimg image-cropper dropdown-btn" id="header__profileimg"
+                style="display: inherit;"></a>
+            <div id="profile-dropdown" class="dropdown-content">
+                <!-- <a href="#home">Home</a> -->
+                <a href="/story/create">새 글 쓰기</a>
+                <a id="logout_btn">로그아웃</a>
+            </div>
         </div>
     </div>
     <div class="header__menu">
-        <div class="header__menu__item"><a href="/main/stories">
+        <div class="header__menu__item"><a href="/stories">
                 <p>스토리 .</p>
             </a></div>
-        <div class="header__menu__item"><a href="/main/posts">
+        <!-- <div class="header__menu__item"><a href="/posts">
                 <p>포스트 .</p>
-            </a></div>
-        <div class="header__menu__item"><a href="/main/test">
-                <p>글쓰기 .</p>
-            </a></div>
+            </a></div> -->
     </div>
 </div>

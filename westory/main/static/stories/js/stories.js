@@ -24,7 +24,7 @@ request_story_list().then((result) => {
     result.forEach(item => {
         var subtitle = item.content.replace(/<[^>]*>/g, '')
         var thumnailImageUrls = findAllImageSrc(item.content)
-        appendLatestStory(item.hash_id, item.title, subtitle.substring(0, 100), thumnailImageUrls[0], item.user_username, item.user_profile_img, item.created_date)
+        appendLatestStory(item.hash_id, item.title, subtitle.substring(0, 300), thumnailImageUrls[0], item.user_username, item.user_profile_img, item.created_date)
     });
 })
 
@@ -37,7 +37,7 @@ function appendLatestStory(hashID, title, subtitle, thumnailUrl, username, profi
 
     var summaryTitleDiv = document.createElement('div')
     summaryTitleDiv.classList.add('stories__latest__item__summary__titlediv')
-    summaryTitleDiv.innerHTML = '<a href="/main/stories/'+ hashID +'"><h3>' + title + '</h3></a>'
+    summaryTitleDiv.innerHTML = '<a href="/stories/'+ hashID +'"><h3>' + title + '</h3></a>'
 
     var summarySubTitleDiv = document.createElement('div')
     summarySubTitleDiv.classList.add('stories__latest__item__summary__subtitlediv')
