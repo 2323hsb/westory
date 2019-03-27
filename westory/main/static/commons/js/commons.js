@@ -42,8 +42,18 @@ function getCookie(name) {
 }
 
 function deleteCookie(name) {
-    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    console.log('delete Cookie: '+ name)
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
+    window.location.reload()
 }
+
+// function deleteCookie(cname) {
+//     console.log('delete Cookie: '+ cname)
+//     var d = new Date(); //Create an date object
+//     d.setTime(d.getTime() - (1000*60*60*24)); //Set the time to the past. 1000 milliseonds = 1 second
+//     var expires = "expires=" + d.toGMTString(); //Compose the expirartion date
+//     window.document.cookie = cname+"="+"; "+expires;//Set the cookie with name and the expiration date
+// }
 
 function changeLoginState(isLogin) {
     if (isLogin) {
@@ -59,16 +69,16 @@ loginBtn.addEventListener('click', async () => {
         let googleAccount = await getGoogleUser();
         var response = await loginWithGoogleAccount(googleAccount)
         if (response.access_token) {
-            document.cookie = "access_token=" + response.access_token
+            document.cookie = "access_token=" + response.access_token + "; " + "path=/"
         } else {
             // 수정 필요
             await signUpWithGoogleAccount(googleAccount)
             response = await loginWithGoogleAccount(googleAccount)
             if (response.access_token) {
-                document.cookie = "access_token=" + response.access_token
+                document.cookie = "access_token=" + response.access_token + "; " + "path=/"
             }
         }
-        window.location.replace('.')
+        window.location.reload()
     } catch (message) {
         console.log(message)
     }
@@ -77,7 +87,7 @@ loginBtn.addEventListener('click', async () => {
 let logoutBtn = document.getElementById('logout_btn')
 logoutBtn.addEventListener('click', () => {
     deleteCookie('access_token')
-    window.location.replace('.')
+    // window.location.replace('/')
 })
 
 const gapiAuthInitVal = { client_id: '877944658856-1tr4gmmtc8nm4ur7m1p3jv2e9omm8fo3.apps.googleusercontent.com', }

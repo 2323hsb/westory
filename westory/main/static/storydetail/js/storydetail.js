@@ -1,3 +1,23 @@
+// const requestStoryByID = async (accessToken, storyID) => {
+//     let results
+//     try {
+//         results = await $.ajax({
+//             headers: {
+//                 Authorization: "Token " + accessToken,
+//             },
+//             url: WESTORY_API_BASE_URL + "/story?hash_id=" + storyID,
+//             type: "GET",
+//         })
+//         return results
+//     } catch (jqXHR) {
+//         if (jqXHR.status == 401) {
+//             throw 'requestStoryByID, unauthorize error'
+//         } else {
+//             throw 'requestStoryByID, unknown error'
+//         }
+//     }
+// }
+
 const requestStoryByID = async (accessToken, storyID) => {
     let results
     try {
@@ -5,7 +25,7 @@ const requestStoryByID = async (accessToken, storyID) => {
             headers: {
                 Authorization: "Token " + accessToken,
             },
-            url: WESTORY_API_BASE_URL + "/story?hash_id=" + storyID,
+            url: WESTORY_API_BASE_URL + "/story/" + storyID,
             type: "GET",
         })
         return results
@@ -95,6 +115,7 @@ function getStoryID() {
 }
 
 requestStoryByID(getCookie('access_token'), getStoryID()).then((result) => {
+    console.log(result)
     let title = document.getElementById('storyTitle')
     let date = document.getElementById('storyDate')
     let content = document.getElementById('storyContent')

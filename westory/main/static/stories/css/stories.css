@@ -150,9 +150,17 @@
     color: rgba(0, 0, 0, 0.80)
 }
 
-.stories__latest__item__summary__about__profiletxt__date {
+.stories__latest__item__summary__about__profiletxt__additional {
     font-size: 0.7em;
     color: rgba(0, 0, 0, 0.54);
+}
+
+.stories__latest__item__summary__about__profiletxt__additional__viewcount {
+    margin-left: 4px;
+}
+
+.stories__latest__item__summary__about__profiletxt__additional__viewcount i {
+    margin-right: 3px;
 }
 
 .stories__introduction__explain {
