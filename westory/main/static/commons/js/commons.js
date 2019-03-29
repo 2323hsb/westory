@@ -42,7 +42,7 @@ function getCookie(name) {
 }
 
 function deleteCookie(name) {
-    console.log('delete Cookie: '+ name)
+    console.log('delete Cookie: ' + name)
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
     window.location.reload()
 }
@@ -175,14 +175,19 @@ function setProfileUI(user) {
     })
 }
 
-requestUserInfo(getCookie('access_token'))
-    .then((user) => {
-        changeLoginState(true)
-        setProfileUI(user)
-    })
-    .catch((message) => {
-        changeLoginState(false)
-    })
+if (getCookie('access_token')) {
+    requestUserInfo(getCookie('access_token'))
+        .then((user) => {
+            changeLoginState(true)
+            setProfileUI(user)
+        })
+        .catch((message) => {
+            changeLoginState(false)
+        })
+} else {
+    changeLoginState(false)
+}
+
 
 // 드롭다운 메뉴 관련
 window.onclick = function (event) {

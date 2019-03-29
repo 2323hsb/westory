@@ -2,9 +2,9 @@ const request_story_list = async () => {
     let results
     try {
         results = await $.ajax({
-            // headers: {
-            //     Authorization: "Token " + access_token,
-            // },
+            headers: {
+                accept: "application/json; charset=utf-8", 
+            },
             url: WESTORY_API_BASE_URL + "/story",
             type: "GET",
         })
