@@ -1,46 +1,38 @@
-const requestStoryByID = async (storyID) => {
-    let results
-    try {
-        results = await $.ajax({
-            headers: {
-                accept: "application/json; charset=utf-8",
-            },
+function requestStoryByID(storyID, accessToken = null) {
+    var headers = {
+        accept: "application/json; charset=utf-8",
+    }
+    if (accessToken) {
+        headers['Authorization'] = "Token " + accessToken
+    }
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            headers: headers,
             url: WESTORY_API_BASE_URL + "/story/" + storyID,
             type: "GET",
+        }).done((response) => {
+            resolve(response)
+        }).fail((error) => {
+            reject('Network or Server Error: ' + error)
         })
-        return results
-    } catch (jqXHR) {
-        if (jqXHR.status == 401) {
-            throw 'requestStoryByID, unauthorize error'
-        } else {
-            throw 'requestStoryByID, unknown error'
-        }
-    }
+    })
 }
 
-const requestLoveStory = async (access_token, storyID, isLover) => {
-    let results
-    try {
-        results = await $.ajax({
+function requestLoveStory(accessToken, storyID) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
             headers: {
                 accept: "application/json",
-                Authorization: "Token " + access_token,
+                Authorization: "Token " + accessToken,
             },
             url: WESTORY_API_BASE_URL + '/story/' + storyID + '/love',
             type: "POST",
-            data: {
-                story_id: storyID,
-                is_lover: isLover,
-            },
+        }).done((response) => {
+            resolve(response)
+        }).fail((error) => {
+            reject('Network or Server Error: ' + error)
         })
-        return results
-    } catch (jqXHR) {
-        if (jqXHR.status == 401) {
-            throw 'requestLoveStory, unauthorize error'
-        } else {
-            throw 'requestLoveStory, unknown error'
-        }
-    }
+    })
 }
 
 const submitComment = async (access_token, storyID, content) => {
@@ -94,7 +86,7 @@ function getStoryID() {
     return lastURLsegment
 }
 
-requestStoryByID(getStoryID()).then((result) => {
+requestStoryByID(getStoryID(), getCookie('access_token')).then((result) => {
     let title = document.getElementById('storyTitle')
     let date = document.getElementById('storyDate')
     let content = document.getElementById('storyContent')
@@ -111,23 +103,21 @@ requestStoryByID(getStoryID()).then((result) => {
     profileName.innerHTML = result[0].user_username
     loversCount.innerHTML = result[0].lovers_count
 
-    var isLover = result[0].is_lover
-    if (isLover) {
+    if (result[0].user_is_lover) {
         LoverIcon.classList.add('fas')
     } else {
         LoverIcon.classList.add('far')
     }
 
-    LoverIcon.addEventListener('click', function (e) {
-        requestLoveStory(getCookie('access_token'), getStoryID(), !isLover).then((result) => {
-            isLover = !isLover
-            LoverIcon.classList.toggle('fas')
-            LoverIcon.classList.toggle('far')
-            loversCount.innerHTML = result.lovers_count
-        })
-    })
+    // getComments(document.getElementById('storyArticleComments'))
+})
 
-    getComments(document.getElementById('storyArticleComments'))
+document.getElementById('storyActionLove').addEventListener('click', function (e) {
+    requestLoveStory(getCookie('access_token'), getStoryID()).then((result) => {
+        e.target.classList.toggle('fas')
+        e.target.classList.toggle('far')
+        document.getElementById('storyActionLoveCounter').innerHTML = result.lovers_count
+    })
 })
 
 function getComments(target) {
