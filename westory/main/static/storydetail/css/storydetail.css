@@ -1,7 +1,7 @@
 .storyArticle {
     margin-top: 30px;
+    margin-bottom: 80px;
     width: 768px;
-    margin-bottom: 40px;
 }
 
 .storyArticle__header {
@@ -139,6 +139,13 @@
 .hsb__btn--primary--inverse {
     border: 1px solid #f59f00;
     color: #f59f00;
+}
+
+.hsb__btn--primary--inverse:hover {
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05), 0 3px 10px 0 rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.3);
+    transition: border 0.2s, box-shadow 0.2s, color 0.2s;
 }
 
 .hsb__textarea {
