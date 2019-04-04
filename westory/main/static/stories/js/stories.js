@@ -5,7 +5,7 @@ const request_story_list = async () => {
             headers: {
                 accept: "application/json; charset=utf-8", 
             },
-            url: WESTORY_API_BASE_URL + "/story",
+            url: WESTORY_API_BASE_URL + "/stories",
             type: "GET",
         })
         return results
@@ -21,7 +21,7 @@ const request_story_list = async () => {
 let latestStoryDiv = document.getElementById("stories__latest")
 
 request_story_list().then((result) => {
-    result.forEach(item => {
+    result.results.forEach(item => {
         var subtitle = item.content.replace(/<[^>]*>/g, '')
         var thumnailImageUrls = findAllImageSrc(item.content)
         appendLatestStory(item.hash_id, item.title, subtitle.substring(0, 300), thumnailImageUrls[0], item.user_username, item.user_profile_img, item.created_date, item.view_count)

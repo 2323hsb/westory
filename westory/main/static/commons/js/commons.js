@@ -179,6 +179,7 @@ if (getCookie('access_token')) {
     requestUserInfo(getCookie('access_token'))
         .then((user) => {
             changeLoginState(true)
+            console.log(user)
             setProfileUI(user)
         })
         .catch((message) => {
