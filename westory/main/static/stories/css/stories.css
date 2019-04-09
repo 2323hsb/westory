@@ -7,8 +7,7 @@
 
 .stories__layout__leftside {
     flex: 1 1 auto;
-    display: block;
-    /* max-width: 680px; */
+    margin-bottom: 60px;
 }
 
 .stories__layout__rightside {
@@ -92,7 +91,7 @@
     width: 150px;
     max-height: 150px;
     background-size: cover;
-    background-image: url(https://cdn-images-1.medium.com/max/800/1*DPuSx11HAKf3TD1mZEac5Q.jpeg);
+    background-image: url(http://localhost:8001/media/noimg.gif);
     background-position: 36% 41%;
 }
 
@@ -191,4 +190,9 @@
 
 .stories__category__list__item--first {
     margin-top: 18px;
+}
+
+.stories__more {
+    margin-top: 30px;
+    display: none;
 }

@@ -42,18 +42,9 @@ function getCookie(name) {
 }
 
 function deleteCookie(name) {
-    console.log('delete Cookie: ' + name)
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
     window.location.reload()
 }
-
-// function deleteCookie(cname) {
-//     console.log('delete Cookie: '+ cname)
-//     var d = new Date(); //Create an date object
-//     d.setTime(d.getTime() - (1000*60*60*24)); //Set the time to the past. 1000 milliseonds = 1 second
-//     var expires = "expires=" + d.toGMTString(); //Compose the expirartion date
-//     window.document.cookie = cname+"="+"; "+expires;//Set the cookie with name and the expiration date
-// }
 
 function changeLoginState(isLogin) {
     if (isLogin) {
@@ -68,14 +59,16 @@ loginBtn.addEventListener('click', async () => {
     try {
         let googleAccount = await getGoogleUser();
         var response = await loginWithGoogleAccount(googleAccount)
-        if (response.access_token) {
+        if (response.access_token && response.user_id) {
             document.cookie = "access_token=" + response.access_token + "; " + "path=/"
+            document.cookie = "ws_uid=" + response.user_id + "; " + "path=/"
         } else {
             // 수정 필요
             await signUpWithGoogleAccount(googleAccount)
             response = await loginWithGoogleAccount(googleAccount)
-            if (response.access_token) {
+            if (response.access_token && response.user_id) {
                 document.cookie = "access_token=" + response.access_token + "; " + "path=/"
+                document.cookie = "ws_uid=" + response.user_id + "; " + "path=/"
             }
         }
         window.location.reload()
@@ -87,6 +80,7 @@ loginBtn.addEventListener('click', async () => {
 let logoutBtn = document.getElementById('logout_btn')
 logoutBtn.addEventListener('click', () => {
     deleteCookie('access_token')
+    deleteCookie('ws_uid')
     // window.location.replace('/')
 })
 
@@ -150,17 +144,30 @@ function signUpWithGoogleAccount(googleUser) {
     })
 }
 
-function requestUserInfo(access_token) {
+function requestUserInfo(access_token, uid=null, url=null) {
+    if(uid==null && url==null) {
+        return null
+    }
+    var target_url
+    if(url) {
+        target_url = url
+    }
+    if(uid) {
+        target_url = WESTORY_API_BASE_URL + "/user/" + uid
+    }
+    var headers = {
+        accept: "application/json; charset=utf-8",
+    }
+    if (access_token) {
+        headers['Authorization'] = "Token " + access_token
+    }
     return new Promise((resolve, reject) => {
         $.ajax({
-            headers: {
-                accept: "application/json",
-                Authorization: "Token " + access_token,
-            },
-            url: WESTORY_API_BASE_URL + "/user",
+            headers: headers,
+            url: target_url,
             type: "GET",
         }).done((response) => {
-            resolve(response[0])
+            resolve(response)
         }).fail((error) => {
             reject(error)
         })
@@ -175,11 +182,10 @@ function setProfileUI(user) {
     })
 }
 
-if (getCookie('access_token')) {
-    requestUserInfo(getCookie('access_token'))
+if (getCookie('access_token') && getCookie('ws_uid')) {
+    requestUserInfo(getCookie('access_token'), uid=getCookie('ws_uid'))
         .then((user) => {
             changeLoginState(true)
-            console.log(user)
             setProfileUI(user)
         })
         .catch((message) => {

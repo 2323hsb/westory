@@ -1,2 +1,2 @@
-djagno
+django
 djangorestframework

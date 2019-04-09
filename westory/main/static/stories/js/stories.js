@@ -1,34 +1,39 @@
-const request_story_list = async () => {
-    let results
-    try {
-        results = await $.ajax({
+function requestStories(url) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
             headers: {
-                accept: "application/json; charset=utf-8", 
+                accept: "application/json; charset=utf-8",
             },
-            url: WESTORY_API_BASE_URL + "/stories",
+            url: url,
             type: "GET",
+        }).done((response) => {
+            resolve(response)
+        }).fail((error) => {
+            reject('Network or Server Error: ' + error)
         })
-        return results
-    } catch (jqXHR) {
-        if (jqXHR.status == 401) {
-            throw 'request_story_list, unauthorize error'
-        } else {
-            throw 'request_story_list, unknown error'
-        }
-    }
+    })
 }
 
 let latestStoryDiv = document.getElementById("stories__latest")
+let moreStoryBtn = document.getElementById('stories__more')
 
-request_story_list().then((result) => {
-    result.results.forEach(item => {
-        var subtitle = item.content.replace(/<[^>]*>/g, '')
-        var thumnailImageUrls = findAllImageSrc(item.content)
-        appendLatestStory(item.hash_id, item.title, subtitle.substring(0, 300), thumnailImageUrls[0], item.user_username, item.user_profile_img, item.created_date, item.view_count)
-    });
-})
+async function loadStories(url) {
+    stories = await requestStories(url)
+    console.log(stories)
+    stories.results.forEach(story => async function () {
+        var subtitle = story.content.replace(/<[^>]*>/g, '')
+        var thumnailImageUrls = findAllImageSrc(story.content)
+        var user = await requestUserInfo(getCookie('access_token'), null, story.user)
+        appendLatestStory(getLastUrl(story.url), story.title, subtitle.substring(0, 300), thumnailImageUrls[0], user.username, user.profile_img, story.created_date, story.view_count)
+    })
+    return [stories.next, stories.previous]
+}
 
-function appendLatestStory(hashID, title, subtitle, thumnailUrl, username, profileImg, date, viewCount) {
+function getLastUrl(url) {
+    return url.split('/')[4]
+}
+
+function appendLatestStory(storyUrl, title, subtitle, thumnailUrl, username, profileImg, date, viewCount) {
     var newItemDiv = document.createElement('div')
     newItemDiv.classList.add('stories__latest__item')
 
@@ -37,11 +42,11 @@ function appendLatestStory(hashID, title, subtitle, thumnailUrl, username, profi
 
     var summaryTitleDiv = document.createElement('div')
     summaryTitleDiv.classList.add('stories__latest__item__summary__titlediv')
-    summaryTitleDiv.innerHTML = '<a href="/stories/' + hashID + '"><h3>' + title + '</h3></a>'
+    summaryTitleDiv.innerHTML = '<a href="/stories/' + storyUrl + '"><h3>' + title + '</h3></a>'
 
     var summarySubTitleDiv = document.createElement('div')
     summarySubTitleDiv.classList.add('stories__latest__item__summary__subtitlediv')
-    summarySubTitleDiv.innerHTML = '<p>' + subtitle + '</p>'
+    summarySubTitleDiv.innerHTML = '<p><a href="/stories/' + storyUrl + '">' + subtitle + '</a></p>'
 
     var summaryAbout = document.createElement('div')
     summaryAbout.classList.add('stories__latest__item__summary__about')
@@ -72,7 +77,10 @@ function appendLatestStory(hashID, title, subtitle, thumnailUrl, username, profi
 
     var summaryThumnail = document.createElement('a')
     summaryThumnail.classList.add('stories__latest__item__img')
-    summaryThumnail.style.backgroundImage = 'url(' + thumnailUrl + ')'
+    summaryThumnail.href = "/stories/" + storyUrl
+    if (thumnailUrl != null) {
+        summaryThumnail.style.backgroundImage = 'url(' + thumnailUrl + ')'
+    }
 
     summaryAbout.appendChild(aboutProfileImage)
     summaryAbout.appendChild(aboutInfoDiv)
@@ -86,9 +94,34 @@ function appendLatestStory(hashID, title, subtitle, thumnailUrl, username, profi
 }
 
 function findAllImageSrc(content) {
-    var m, urls = [], rex = /<img[^>]+src="?([^"\s]+)"?\s*\>/g;
+    var m, urls = [], rex = /<img[^>]+src="?([^"\s]+)/g;
     while (m = rex.exec(content)) {
         urls.push(m[1]);
     }
     return urls
 }
+
+$(window).scroll(function () {
+    var _docHeight = (document.height !== undefined) ? document.height : document.body.offsetHeight;
+    if (_docHeight == window.pageYOffset + window.innerHeight) {
+        if (nextStoryURL != null) {
+            moreStoryBtn.style.display = 'block'
+        }
+    }
+});
+
+moreStoryBtn.addEventListener('click', function (e) {
+    if (nextStoryURL) {
+        loadStories(nextStoryURL).then((result) => {
+            nextStoryURL = result[0]
+            if (nextStoryURL == null) {
+                moreStoryBtn.style.display = 'none'
+            }
+        })
+    }
+})
+
+var nextStoryURL = WESTORY_API_BASE_URL + "/stories"
+loadStories(nextStoryURL).then((result) => {
+    nextStoryURL = result[0]
+})

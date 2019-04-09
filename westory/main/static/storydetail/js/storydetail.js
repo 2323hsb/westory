@@ -8,7 +8,7 @@ function requestStoryByID(storyID, accessToken = null) {
     return new Promise((resolve, reject) => {
         $.ajax({
             headers: headers,
-            url: WESTORY_API_BASE_URL + "/story/" + storyID,
+            url: WESTORY_API_BASE_URL + "/stories/" + storyID,
             type: "GET",
         }).done((response) => {
             resolve(response)
@@ -25,7 +25,7 @@ function requestLoveStory(accessToken, storyID) {
                 accept: "application/json",
                 Authorization: "Token " + accessToken,
             },
-            url: WESTORY_API_BASE_URL + '/story/' + storyID + '/love',
+            url: WESTORY_API_BASE_URL + '/stories/' + storyID + '/love_story/',
             type: "POST",
         }).done((response) => {
             resolve(response)
@@ -43,7 +43,7 @@ const submitComment = async (access_token, storyID, content) => {
                 accept: "application/json",
                 Authorization: "Token " + access_token,
             },
-            url: WESTORY_API_BASE_URL + '/story/' + storyID + '/comment',
+            url: WESTORY_API_BASE_URL + '/stories/' + storyID + '/add_comment/',
             type: "POST",
             data: {
                 content: content,
@@ -67,7 +67,7 @@ const requestComments = async (access_token, storyID) => {
                 accept: "application/json",
                 Authorization: "Token " + access_token,
             },
-            url: WESTORY_API_BASE_URL + '/story/' + storyID + '/comment',
+            url: WESTORY_API_BASE_URL + '/stories/' + storyID + '/comment',
             type: "GET",
         })
         return results
@@ -96,14 +96,16 @@ requestStoryByID(getStoryID(), getCookie('access_token')).then((result) => {
     let loversCount = document.getElementById('storyActionLoveCounter')
     let LoverIcon = document.getElementById('storyActionLove')
 
-    title.innerHTML = result[0].title
-    date.innerHTML = dateFormatter(result[0].created_date, 1)
-    content.innerHTML = result[0].content
-    profileImg.style.backgroundImage = 'url(' + result[0].user_profile_img + ')'
-    profileName.innerHTML = result[0].user_username
-    loversCount.innerHTML = result[0].lovers_count
+    title.innerHTML = result.title
+    date.innerHTML = dateFormatter(result.created_date, 1)
+    content.innerHTML = result.content
+    requestUserInfo(getCookie('access_token'), uid = null, url = result.user).then((user) => {
+        profileImg.style.backgroundImage = 'url(' + user.profile_img + ')'
+        profileName.innerHTML = user.username
+    })
+    loversCount.innerHTML = result.lovers_count
 
-    if (result[0].user_is_lover) {
+    if (result.user_is_lover) {
         LoverIcon.classList.add('fas')
     } else {
         LoverIcon.classList.add('far')

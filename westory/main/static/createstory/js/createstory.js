@@ -31,7 +31,7 @@ const request_upload_story = async (access_token, title, content) => {
             headers: {
                 Authorization: "Token " + access_token,
             },
-            url: WESTORY_API_BASE_URL + "/story",
+            url: WESTORY_API_BASE_URL + "/stories/",
             type: "POST",
             data: {
                 title: title,
