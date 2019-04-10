@@ -18,15 +18,15 @@ let latestStoryDiv = document.getElementById("stories__latest")
 let moreStoryBtn = document.getElementById('stories__more')
 
 async function loadStories(url) {
-    stories = await requestStories(url)
-    console.log(stories)
-    stories.results.forEach(story => async function () {
-        var subtitle = story.content.replace(/<[^>]*>/g, '')
-        var thumnailImageUrls = findAllImageSrc(story.content)
-        var user = await requestUserInfo(getCookie('access_token'), null, story.user)
-        appendLatestStory(getLastUrl(story.url), story.title, subtitle.substring(0, 300), thumnailImageUrls[0], user.username, user.profile_img, story.created_date, story.view_count)
-    })
-    return [stories.next, stories.previous]
+    result = await requestStories(url)
+    stories = result.results
+    for (let i = 0; i < stories.length; i++) {
+        var user = await requestUserInfo(getCookie('access_token'), null, stories[i].user)
+        var subtitle = stories[i].content.replace(/<[^>]*>/g, '')
+        var thumnailImageUrls = findAllImageSrc(stories[i].content)
+        appendLatestStory(getLastUrl(stories[i].url), stories[i].title, subtitle.substring(0, 300), thumnailImageUrls[0], user.username, user.profile_img, stories[i].created_date, stories[i].view_count)
+    }
+    return [result.next, result.previous]
 }
 
 function getLastUrl(url) {

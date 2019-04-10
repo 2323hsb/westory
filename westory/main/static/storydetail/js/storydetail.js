@@ -35,10 +35,9 @@ function requestLoveStory(accessToken, storyID) {
     })
 }
 
-const submitComment = async (access_token, storyID, content) => {
-    let results
-    try {
-        results = await $.ajax({
+function requestAddComment(access_token, storyID, content) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
             headers: {
                 accept: "application/json",
                 Authorization: "Token " + access_token,
@@ -48,36 +47,29 @@ const submitComment = async (access_token, storyID, content) => {
             data: {
                 content: content,
             },
+        }).done((response) => {
+            resolve(response)
+        }).fail((error) => {
+            reject('Network or Server Error: ' + error)
         })
-        return results
-    } catch (jqXHR) {
-        if (jqXHR.status == 401) {
-            throw 'submitComment, unauthorize error'
-        } else {
-            throw 'submitComment, unknown error'
-        }
-    }
+    })
 }
 
-const requestComments = async (access_token, storyID) => {
-    let results
-    try {
-        results = await $.ajax({
+function requestGetComments(access_token, storyID) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
             headers: {
                 accept: "application/json",
                 Authorization: "Token " + access_token,
             },
-            url: WESTORY_API_BASE_URL + '/stories/' + storyID + '/comment',
+            url: WESTORY_API_BASE_URL + '/stories/' + storyID + '/comments',
             type: "GET",
+        }).done((response) => {
+            resolve(response)
+        }).fail((error) => {
+            reject('Network or Server Error: ' + error)
         })
-        return results
-    } catch (jqXHR) {
-        if (jqXHR.status == 401) {
-            throw 'requestComments, unauthorize error'
-        } else {
-            throw 'requestComments, unknown error'
-        }
-    }
+    })
 }
 
 function getStoryID() {
@@ -85,6 +77,10 @@ function getStoryID() {
     var lastURLsegment = currentURL.substr(currentURL.lastIndexOf('/') + 1)
     return lastURLsegment
 }
+
+var commentSubmitBtn = document.getElementById('storyCommentSubmitBtn')
+var commentTextarea = document.getElementById('storyCommentTextarea')
+var showCommentBtn = document.getElementById('storyArticleShowComments')
 
 requestStoryByID(getStoryID(), getCookie('access_token')).then((result) => {
     let title = document.getElementById('storyTitle')
@@ -111,7 +107,8 @@ requestStoryByID(getStoryID(), getCookie('access_token')).then((result) => {
         LoverIcon.classList.add('far')
     }
 
-    // getComments(document.getElementById('storyArticleComments'))
+    let commentsLength = result.comments.length
+    showCommentBtn.innerHTML = '<p>댓글 보기 (' + commentsLength + ')</p>'
 })
 
 document.getElementById('storyActionLove').addEventListener('click', function (e) {
@@ -122,49 +119,53 @@ document.getElementById('storyActionLove').addEventListener('click', function (e
     })
 })
 
-function getComments(target) {
-    requestComments(getCookie('access_token'), getStoryID()).then((result) => {
-        target.innerHTML = ''
-        result.forEach(element => {
-            var a = document.createElement('div')
-            a.classList.add('storyArticle__comment')
-            var b = document.createElement('div')
-            b.classList.add('nametag')
-            var c = document.createElement('a')
-            c.classList.add('nametag__img')
-            c.classList.add('image-cropper')
-            c.style.backgroundImage = 'url(' + element.user_profile_img + ')'
-            var d = document.createElement('div')
-            d.classList.add('nametag__profile')
-            var e = document.createElement('p')
-            e.innerHTML = element.user_username
-            e.classList.add('nametag__profile__name')
-            var f = document.createElement('p')
-            f.innerHTML = dateFormatter(element.created_date)
-            f.classList.add('nametag__profile__date')
-            var g = document.createElement('div')
-            g.classList.add('stroyArticle__comment__content')
-            var h = document.createElement('p')
-            h.innerHTML = element.content
+async function reloadComments(comments) {
+    let commentBox = document.getElementById('storyArticleComments')
+    commentBox.innerHTML = ''
+    for (let i = 0; i < comments.length; i++) {
+        let user = await requestUserInfo(getCookie('access_token'), uid=null, url=comments[i].user)
+        var a = document.createElement('div')
+        a.classList.add('storyArticle__comment')
+        var b = document.createElement('div')
+        b.classList.add('nametag')
+        var c = document.createElement('a')
+        c.classList.add('nametag__img')
+        c.classList.add('image-cropper')
+        c.style.backgroundImage = 'url(' + user.profile_img + ')'
+        var d = document.createElement('div')
+        d.classList.add('nametag__profile')
+        var e = document.createElement('p')
+        e.innerHTML = user.username
+        e.classList.add('nametag__profile__name')
+        var f = document.createElement('p')
+        f.innerHTML = dateFormatter(comments[i].created_date)
+        f.classList.add('nametag__profile__date')
+        var g = document.createElement('div')
+        g.classList.add('stroyArticle__comment__content')
+        var h = document.createElement('p')
+        h.innerHTML = comments[i].content
 
-            d.appendChild(e)
-            d.appendChild(f)
-            b.appendChild(c)
-            b.appendChild(d)
-            g.appendChild(h)
-            a.appendChild(b)
-            a.appendChild(g)
+        d.appendChild(e)
+        d.appendChild(f)
+        b.appendChild(c)
+        b.appendChild(d)
+        g.appendChild(h)
+        a.appendChild(b)
+        a.appendChild(g)
 
-            target.appendChild(a)
-        });
-    })
+        commentBox.appendChild(a)
+    }
 }
 
-var commentSubmitBtn = document.getElementById('storyCommentSubmitBtn')
-var commentTextarea = document.getElementById('storyCommentTextarea')
-commentSubmitBtn.addEventListener('click', function (e) {
-    var a = commentTextarea.value
-    submitComment(getCookie('access_token'), getStoryID(), a).then((result) => {
-        getComments(document.getElementById('storyArticleComments'))
-    })
+commentSubmitBtn.addEventListener('click', async function (e) {
+    await requestAddComment(getCookie('access_token'), getStoryID(), commentTextarea.value)
+    let comments = await requestGetComments(getCookie('access_token'), getStoryID())
+    reloadComments(comments)
+    showCommentBtn.style.display = 'none'
+})
+
+showCommentBtn.addEventListener('click', async function (e) {
+    let comments = await requestGetComments(getCookie('access_token'), getStoryID())
+    reloadComments(comments)
+    showCommentBtn.style.display = 'none'
 })
